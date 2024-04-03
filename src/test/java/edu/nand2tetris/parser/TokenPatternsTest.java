@@ -62,17 +62,17 @@ public final class TokenPatternsTest {
 
     @Test
     public void testArithmeticCommandsPattern() {
-        testValuesByPattern(ARITHMETIC_COMMANDS, TokenPatterns.ARITHMETIC_COMMAND);
+        testValuesByPattern(ARITHMETIC_COMMANDS, TokenPatterns.ARITHMETIC_COMMAND_PATTERN);
     }
 
     @Test
     public void testComparisonCommandsPattern() {
-        testValuesByPattern(COMPARISON_COMMANDS, TokenPatterns.COMPARISON_COMMAND);
+        testValuesByPattern(COMPARISON_COMMANDS, TokenPatterns.COMPARISON_COMMAND_PATTERN);
     }
 
     @Test
     public void testLogicalCommandsPattern() {
-        testValuesByPattern(LOGICAL_COMMANDS, TokenPatterns.LOGICAL_COMMAND);
+        testValuesByPattern(LOGICAL_COMMANDS, TokenPatterns.LOGICAL_COMMAND_PATTERN);
     }
 
     private static void testValuesByPattern(String[] values, Pattern pattern) {

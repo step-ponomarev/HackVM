@@ -2,8 +2,26 @@ package edu.nand2tetris.parser;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public final class Parser implements Closeable {
+    private final Reader fileReader;
+    private CommandType commandType;
+
+    public Parser(Path file) throws IOException {
+        if (file == null) {
+            throw new IllegalArgumentException("Path cannot be null!");
+        }
+
+        if (Files.notExists(file)) {
+            throw new IllegalStateException("Path " + file + " does not exist!");
+        }
+
+        this.fileReader = Files.newBufferedReader(file);
+    }
+
     public boolean hasMoreLines() {
         throw new UnsupportedOperationException("Unsupported operation");
     }
@@ -13,7 +31,7 @@ public final class Parser implements Closeable {
     }
 
     public CommandType commandType() {
-        throw new UnsupportedOperationException("Unsupported operation");
+        return commandType;
     }
 
     public String arg1() {
@@ -26,6 +44,6 @@ public final class Parser implements Closeable {
 
     @Override
     public void close() throws IOException {
-        throw new UnsupportedOperationException("Unsupported operation");
+        fileReader.close();
     }
 }
