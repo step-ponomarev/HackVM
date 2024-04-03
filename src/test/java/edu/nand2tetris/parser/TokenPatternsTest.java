@@ -17,11 +17,27 @@ public final class TokenPatternsTest {
             "temp"
     };
 
+    private static final String[] ARITHMETIC_COMMANDS = {
+            "add",
+            "sub",
+            "neg"
+    };
+
+    private static final String[] COMPARISON_COMMANDS = {
+            "eq",
+            "gt",
+            "lt"
+    };
+
+    private static final String[] LOGICAL_COMMANDS = {
+            "and",
+            "or",
+            "not"
+    };
+
     @Test
     public void testSegmentPattern() {
-        for (String seg : SEGMENTS) {
-            Assertions.assertTrue(TokenPatterns.SEGMENT_PATTERN.matcher(seg).matches());
-        }
+        testValuesByPattern(SEGMENTS, TokenPatterns.SEGMENT_PATTERN);
     }
 
     @Test
@@ -31,6 +47,37 @@ public final class TokenPatternsTest {
             for (int i = 0; i < 199; i++) {
                 Assertions.assertTrue(TokenPatterns.PUSH_COMMAND_PATTERN.matcher(pushTemplate.formatted(seg, i)).matches());
             }
+        }
+    }
+
+    @Test
+    public void testPopPattern() {
+        final String pushTemplate = "pop %s %d";
+        for (String seg : SEGMENTS) {
+            for (int i = 0; i < 199; i++) {
+                Assertions.assertTrue(TokenPatterns.POP_COMMAND_PATTERN.matcher(pushTemplate.formatted(seg, i)).matches());
+            }
+        }
+    }
+
+    @Test
+    public void testArithmeticCommandsPattern() {
+        testValuesByPattern(ARITHMETIC_COMMANDS, TokenPatterns.ARITHMETIC_COMMAND);
+    }
+
+    @Test
+    public void testComparisonCommandsPattern() {
+        testValuesByPattern(COMPARISON_COMMANDS, TokenPatterns.COMPARISON_COMMAND);
+    }
+
+    @Test
+    public void testLogicalCommandsPattern() {
+        testValuesByPattern(LOGICAL_COMMANDS, TokenPatterns.LOGICAL_COMMAND);
+    }
+
+    private static void testValuesByPattern(String[] values, Pattern pattern) {
+        for (String value : values) {
+            Assertions.assertTrue(pattern.matcher(value).matches());
         }
     }
 }
