@@ -52,7 +52,7 @@ public final class ParserTest {
                 pop %s %d
                 """;
 
-        final StringBuilder byteCode = new StringBuilder("");
+        final StringBuilder byteCode = new StringBuilder();
         for (String seg : segments) {
             for (int i = 0; i < Constants.MAX_DECIMAL_VALUE; i++) {
                 byteCode.append(
@@ -75,6 +75,30 @@ public final class ParserTest {
                     Assertions.assertEquals(seg, parser.arg1());
                     Assertions.assertEquals(i, parser.arg2());
                 }
+            }
+
+            Assertions.assertFalse(parser.hasMoreLines());
+        } finally {
+            Files.deleteIfExists(file);
+        }
+    }
+
+    @Test
+    public void testArithmetic() throws IOException {
+        final Path file = Resources.RESOURCES_DIR.resolve("Arithmetic.vm");
+        Files.createFile(file);
+
+        final String[] commands = {"add", "sub", "neg"};
+        final StringBuilder byteCode = new StringBuilder();
+        for (String command : commands) {
+            byteCode.append(command).append('\n');
+        }
+        Files.writeString(file, byteCode.toString());
+
+        try (Parser parser = new Parser((file))) {
+            for (String command : commands) {
+                parser.advance();
+                Assertions.assertEquals(command, parser.arg1());
             }
 
             Assertions.assertFalse(parser.hasMoreLines());
