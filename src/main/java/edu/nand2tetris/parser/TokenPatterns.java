@@ -72,6 +72,7 @@ public final class TokenPatterns {
             )
     );
 
-    private TokenPatterns() {
-    }
+    static Pattern COMMENT = Pattern.compile("^\\/{2}.*$");
+    
+    private TokenPatterns() {}
 }
