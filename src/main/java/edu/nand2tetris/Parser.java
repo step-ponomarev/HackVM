@@ -1,4 +1,4 @@
-package edu.nand2tetris.parser;
+package edu.nand2tetris;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import edu.nand2tetris.CommandType;
 import edu.nand2tetris.Constants;
+import edu.nand2tetris.TokenPatterns;
 
 public final class Parser implements Closeable {
     private final BufferedReader fileReader;

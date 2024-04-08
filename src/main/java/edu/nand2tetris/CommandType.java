@@ -1,4 +1,4 @@
-package edu.nand2tetris.parser;
+package edu.nand2tetris;
 
 import java.util.regex.Pattern;
 

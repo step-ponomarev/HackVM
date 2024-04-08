@@ -1,4 +1,4 @@
-package edu.nand2tetris.parser;
+package edu.nand2tetris;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +7,9 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.nand2tetris.CommandType;
 import edu.nand2tetris.Constants;
+import edu.nand2tetris.Parser;
 import edu.nand2tetris.Resources;
 
 
