@@ -1,10 +1,14 @@
-package edu.nand2tetris;
+package edu.nand2tetris.code.writer;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import edu.nand2tetris.CommandType;
+import edu.nand2tetris.Constants;
+import edu.nand2tetris.Segment;
 
 public final class CodeWriter implements Closeable {
     private static final String READ_SEGMENT_BASE_ADDRESS_TEMPLATE = """
@@ -16,7 +20,7 @@ public final class CodeWriter implements Closeable {
             M=M+1
                         
             A=M
-            M=%s
+            M=D
             """;
 
     private static final String POP_VALUE_FROM_STACK_TEMPLATE = """
@@ -27,7 +31,7 @@ public final class CodeWriter implements Closeable {
             A=D
             D=M
                         
-            A=%s
+            A=D
             M=D
             """;
     private final BufferedWriter writer;
@@ -40,26 +44,28 @@ public final class CodeWriter implements Closeable {
         throw new UnsupportedOperationException("Unsupported operation");
     }
 
-    public void writePushPop(CommandType commandType, String segment, int index) {
+    public void writePushPop(CommandType commandType, Segment segment, int index) throws IOException {
         checkPushOrPopCommand(commandType);
+        writer.write(handlePushPop(commandType, segment, index));
+    }
 
+    static String handlePushPop(CommandType commandType, Segment segment, int index) {
+        checkPushOrPopCommand(commandType);
         final StringBuilder asm = new StringBuilder();
-        final Segment segmentType = Segment.parse(segment);
-        if (segmentType == Segment.CONSTANT) {
-
+        if (segment == Segment.CONSTANT) {
+            return asm.append(generateConstantPushOrPopCode(commandType, index)).toString();
         }
 
-        final String register = segmentToRegister(segmentType, index);
+        asm.append(
+                READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(segmentToRegister(segment, index))
+        ).append('\n');
+        asm.append(
+                commandType == CommandType.C_PUSH
+                        ? PUSH_VALUE_ON_STACK_TEMPLATE
+                        : POP_VALUE_FROM_STACK_TEMPLATE
+        );
 
-        final String readSegmentBaseAddressCode = READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(register);
-
-        // смапить сегмент в регистр
-        // прочитать адресс сегмента
-        // ветвление по PUSH/POP
-        // сохранить/положить на стек запись из/в сегмент
-
-        //A=STACK_ADDRESS
-
+        return asm.toString();
     }
 
     static String generateConstantPushOrPopCode(CommandType commandType, int index) {
@@ -85,7 +91,7 @@ public final class CodeWriter implements Closeable {
 
     @Override
     public void close() throws IOException {
-        throw new UnsupportedOperationException("Unsupported operation");
+        writer.close();
     }
 
     private static void checkPushOrPopCommand(CommandType commandType) {

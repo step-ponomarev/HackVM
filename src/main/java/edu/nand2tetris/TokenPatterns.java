@@ -10,7 +10,7 @@ public final class TokenPatterns {
     public static final Pattern POINTER_SEGMENT_PATTERN = Pattern.compile("^pointer$");
     public static final Pattern TEMP_SEGMENT_PATTERN = Pattern.compile("^temp$");
 
-    static final Pattern SEGMENT_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s|%s|%s)$".formatted(
+    static final Pattern SEGMENT_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s)$".formatted(
                     ARGUMENT_SEGMENT_PATTERN.pattern().substring(1, ARGUMENT_SEGMENT_PATTERN.pattern().length() - 1),
                     LOCAL_SEGMENT_PATTERN.pattern().substring(1, LOCAL_SEGMENT_PATTERN.pattern().length() - 1),
                     STATIC_SEGMENT_PATTERN.pattern().substring(1, STATIC_SEGMENT_PATTERN.pattern().length() - 1),
@@ -56,12 +56,12 @@ public final class TokenPatterns {
             NOT_COMMAND_PATTERN.pattern().substring(1, NOT_COMMAND_PATTERN.pattern().length() - 1)
     ));
 
-    static final Pattern PUSH_COMMAND_PATTERN = Pattern.compile("^push (%s) \\d+$".formatted(
+    static final Pattern PUSH_COMMAND_PATTERN = Pattern.compile("^push %s \\d+$".formatted(
                     SEGMENT_PATTERN.pattern().substring(1, SEGMENT_PATTERN.pattern().length() - 1)
             )
     );
 
-    static final Pattern POP_COMMAND_PATTERN = Pattern.compile("^pop (%s) \\d+$".formatted(
+    static final Pattern POP_COMMAND_PATTERN = Pattern.compile("^pop %s \\d+$".formatted(
                     SEGMENT_PATTERN.pattern().substring(1, SEGMENT_PATTERN.pattern().length() - 1)
             )
     );
