@@ -3,23 +3,36 @@ package edu.nand2tetris;
 import java.util.regex.Pattern;
 
 public enum Segment {
-    ARGUMENT(TokenPatterns.ARGUMENT_SEGMENT_PATTERN),
-    LOCAL(TokenPatterns.LOCAL_SEGMENT_PATTERN),
-    STATIC(TokenPatterns.STATIC_SEGMENT_PATTERN),
-    CONSTANT(TokenPatterns.CONSTANT_SEGMENT_PATTERN),
-    POINTER(TokenPatterns.POINTER_SEGMENT_PATTERN),
-    TEMP(TokenPatterns.TEMP_SEGMENT_PATTERN);
+    ARGUMENT(TokenPatterns.ARGUMENT_SEGMENT_PATTERN, "argument"),
+    LOCAL(TokenPatterns.LOCAL_SEGMENT_PATTERN, "local"),
+    STATIC(TokenPatterns.STATIC_SEGMENT_PATTERN, "static"),
+    CONSTANT(TokenPatterns.CONSTANT_SEGMENT_PATTERN, "constant"),
+    //depends of index 0==this 1==that
+    POINTER(TokenPatterns.POINTER_SEGMENT_PATTERN, null),
+    TEMP(TokenPatterns.TEMP_SEGMENT_PATTERN, "temp");
 
     private final Pattern pattern;
     private final String register;
 
-    Segment(Pattern pattern) {
-        this(pattern, null);
-    }
-
     Segment(Pattern pattern, String register) {
         this.pattern = pattern;
         this.register = register;
+    }
+
+    public String getRegister(int index) {
+        if (index < 0) {
+            throw new IllegalArgumentException("Index cannot be < 0");
+        }
+        
+        if (this != POINTER) {
+            return register;
+        }
+
+        if (index != 0 && index != 1) {
+            throw new IllegalArgumentException("Pointer segment index should be 0 or 1");
+        }
+
+        return index == 0 ? "this" : "that";
     }
 
     public static Segment parse(String seg) {

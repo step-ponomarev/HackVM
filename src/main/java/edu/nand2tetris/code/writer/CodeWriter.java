@@ -15,25 +15,24 @@ public final class CodeWriter implements Closeable {
             @%s
             D=M
             """;
-    private static final String PUSH_VALUE_ON_STACK_TEMPLATE = """
+    
+    //TODO: заменить на темплейты со значениями, а не косвенно через D
+    private static final String PUSH_FROM_D_TEMPLATE = """
             @SP
             M=M+1
-                        
             A=M
             M=D
             """;
-
-    private static final String POP_VALUE_FROM_STACK_TEMPLATE = """
+    //TODO: Тут баг, мы не помещаем значение в сегмент т.к. оверайдим Д
+    private static final String POP_INTO_D_TEMPLATE = """
             @SP
-            D=M
             M=M-1
-                        
             A=D
             D=M
-                        
             A=D
             M=D
             """;
+
     private final BufferedWriter writer;
 
     public CodeWriter(Path path) throws IOException {
@@ -41,12 +40,19 @@ public final class CodeWriter implements Closeable {
     }
 
     public void writeArithmetic(String command) {
-        throw new UnsupportedOperationException("Unsupported operation");
+        final CommandType commandType = CommandType.parse(command);
+        if (commandType != CommandType.C_ARITHMETIC) {
+            throw new IllegalStateException("Illegal command type: " + commandType + " command " + command);
+        }
+        
+        
     }
 
     public void writePushPop(CommandType commandType, Segment segment, int index) throws IOException {
         checkPushOrPopCommand(commandType);
-        writer.write(handlePushPop(commandType, segment, index));
+        writer.write(
+                handlePushPop(commandType, segment, index)
+        );
     }
 
     static String handlePushPop(CommandType commandType, Segment segment, int index) {
@@ -58,11 +64,11 @@ public final class CodeWriter implements Closeable {
 
         asm.append(
                 READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(segmentToRegister(segment, index))
-        ).append('\n');
+        );
         asm.append(
                 commandType == CommandType.C_PUSH
-                        ? PUSH_VALUE_ON_STACK_TEMPLATE
-                        : POP_VALUE_FROM_STACK_TEMPLATE
+                        ? PUSH_FROM_D_TEMPLATE
+                        : POP_INTO_D_TEMPLATE
         );
 
         return asm.toString();
@@ -71,7 +77,7 @@ public final class CodeWriter implements Closeable {
     static String generateConstantPushOrPopCode(CommandType commandType, int index) {
         checkPushOrPopCommand(commandType);
 
-        return commandType == CommandType.C_PUSH ? PUSH_VALUE_ON_STACK_TEMPLATE.formatted(index) : POP_VALUE_FROM_STACK_TEMPLATE.formatted(index);
+        return commandType == CommandType.C_PUSH ? PUSH_FROM_D_TEMPLATE.formatted(index) : POP_INTO_D_TEMPLATE.formatted(index);
     }
 
     static String segmentToRegister(Segment segmentType, int index) {
