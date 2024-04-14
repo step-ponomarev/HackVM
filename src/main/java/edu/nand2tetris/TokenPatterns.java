@@ -7,15 +7,17 @@ public final class TokenPatterns {
     public static final Pattern LOCAL_SEGMENT_PATTERN = Pattern.compile("^local$");
     public static final Pattern STATIC_SEGMENT_PATTERN = Pattern.compile("^static$");
     public static final Pattern CONSTANT_SEGMENT_PATTERN = Pattern.compile("^constant$");
-    public static final Pattern POINTER_SEGMENT_PATTERN = Pattern.compile("^pointer$");
+    public static final Pattern THIS_SEGMENT_PATTERN = Pattern.compile("^this$");
+    public static final Pattern THAT_SEGMENT_PATTERN = Pattern.compile("^that$");
     public static final Pattern TEMP_SEGMENT_PATTERN = Pattern.compile("^temp$");
 
-    static final Pattern SEGMENT_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s)$".formatted(
+    static final Pattern SEGMENT_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s|%s)$".formatted(
                     ARGUMENT_SEGMENT_PATTERN.pattern().substring(1, ARGUMENT_SEGMENT_PATTERN.pattern().length() - 1),
                     LOCAL_SEGMENT_PATTERN.pattern().substring(1, LOCAL_SEGMENT_PATTERN.pattern().length() - 1),
                     STATIC_SEGMENT_PATTERN.pattern().substring(1, STATIC_SEGMENT_PATTERN.pattern().length() - 1),
                     CONSTANT_SEGMENT_PATTERN.pattern().substring(1, CONSTANT_SEGMENT_PATTERN.pattern().length() - 1),
-                    POINTER_SEGMENT_PATTERN.pattern().substring(1, POINTER_SEGMENT_PATTERN.pattern().length() - 1),
+                    THIS_SEGMENT_PATTERN.pattern().substring(1, THIS_SEGMENT_PATTERN.pattern().length() - 1),
+                    THAT_SEGMENT_PATTERN.pattern().substring(1, THAT_SEGMENT_PATTERN.pattern().length() - 1),
                     TEMP_SEGMENT_PATTERN.pattern().substring(1, TEMP_SEGMENT_PATTERN.pattern().length() - 1)
             )
     );

@@ -1,9 +1,12 @@
 @ARG
 D=M
+@ADDR
+M=D
 @SP
 D=M
 M=M-1
 A=D
 D=M
-A=D
+@ADDR
+A=M
 M=D

@@ -6,9 +6,10 @@ public enum Segment {
     ARGUMENT(TokenPatterns.ARGUMENT_SEGMENT_PATTERN, "argument"),
     LOCAL(TokenPatterns.LOCAL_SEGMENT_PATTERN, "local"),
     STATIC(TokenPatterns.STATIC_SEGMENT_PATTERN, "static"),
-    CONSTANT(TokenPatterns.CONSTANT_SEGMENT_PATTERN, "constant"),
+    CONSTANT(TokenPatterns.CONSTANT_SEGMENT_PATTERN, null),
     //depends of index 0==this 1==that
-    POINTER(TokenPatterns.POINTER_SEGMENT_PATTERN, null),
+    THIS(TokenPatterns.THIS_SEGMENT_PATTERN, null),
+    THAT(TokenPatterns.THAT_SEGMENT_PATTERN, null),
     TEMP(TokenPatterns.TEMP_SEGMENT_PATTERN, "temp");
 
     private final Pattern pattern;
@@ -23,16 +24,8 @@ public enum Segment {
         if (index < 0) {
             throw new IllegalArgumentException("Index cannot be < 0");
         }
-        
-        if (this != POINTER) {
-            return register;
-        }
 
-        if (index != 0 && index != 1) {
-            throw new IllegalArgumentException("Pointer segment index should be 0 or 1");
-        }
-
-        return index == 0 ? "this" : "that";
+        return register;
     }
 
     public static Segment parse(String seg) {
