@@ -59,9 +59,9 @@ public final class CodeWriter implements Closeable {
             """ + PUSH_FROM_D_TEMPLATE;
 
     private static final String SUB_TEMPLATE = POP_INTO_ARG1_TEMPLATE + POP_INTO_ARG2_TEMPLATE + """
-            @ARG1
-            D=M
             @ARG2
+            D=M
+            @ARG1
             A=M
             D=D-A
             """ + PUSH_FROM_D_TEMPLATE;
@@ -118,7 +118,7 @@ public final class CodeWriter implements Closeable {
                     """
                     @%d
                     D=A
-                    """.formatted(Constants.TEMP_BASE + index)
+                    """.formatted(Constants.TEMP_BASE)
             );
         } else {
             asm.append(
@@ -128,7 +128,7 @@ public final class CodeWriter implements Closeable {
             );
         }
 
-        if (commandType == CommandType.C_POP && segment != Segment.TEMP) {
+        if (commandType == CommandType.C_POP) {
             asm.append(
                     """
                     @%d
