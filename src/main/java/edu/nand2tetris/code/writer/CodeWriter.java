@@ -23,19 +23,19 @@ public final class CodeWriter implements Closeable {
             """;
     private static final String PUSH_FROM_D_TEMPLATE = """
             @SP
-            M=M+1
             A=M
             M=D
+            @SP
+            M=M+1
             """;
     private static final String POP_INTO_D_TEMPLATE = """
-            @ADDR
+            @ADDR_SAVE
             M=D
             @SP
-            D=M
             M=M-1
-            A=D
+            A=M
             D=M
-            @ADDR
+            @ADDR_SAVE
             A=M
             M=D
             """;
@@ -79,7 +79,7 @@ public final class CodeWriter implements Closeable {
     }
 
     public void init() throws IOException {
-        this.writer.write(INIT_CODE);
+//        this.writer.write(INIT_CODE);
     }
 
     public void writeArithmetic(String command) throws IOException {
@@ -88,6 +88,7 @@ public final class CodeWriter implements Closeable {
             throw new IllegalStateException("Illegal command type: " + commandType + " command " + command);
         }
 
+        writer.write("//" + command.toUpperCase() + '\n');
         switch (command) {
             case "add" -> writer.write(ADD_TEMPLATE);
             case "neg" -> writer.write(NEG_TEMPLATE);
@@ -106,28 +107,12 @@ public final class CodeWriter implements Closeable {
     static String handlePushPop(CommandType commandType, Segment segment, int index) {
         checkPushOrPopCommand(commandType);
         final StringBuilder asm = new StringBuilder();
+        asm.append("//" + commandType + " " + segment +  " " + index + '\n');
         if (segment == Segment.CONSTANT) {
             asm.append("""
                     @%d
                     D=A
-                    @cnst
-                    M=D
-                    D=A
                     """.formatted(index));
-        } else if (segment == Segment.THIS) {
-            asm.append(
-                    """
-                    @0
-                    D=A
-                    """
-            );
-        } else if (segment == Segment.THAT) {
-            asm.append(
-                    """
-                    @1
-                    D=A          
-                    """
-            );
         } else if (segment == Segment.TEMP) {
             asm.append(
                     """
@@ -135,9 +120,31 @@ public final class CodeWriter implements Closeable {
                     D=A
                     """.formatted(Constants.TEMP_BASE + index)
             );
-        }else {
+        } else {
             asm.append(
-                    READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(segmentToRegister(segment, index))
+                    READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(
+                            segmentToRegister(segment)
+                    )
+            );
+        }
+
+        if (commandType == CommandType.C_POP && segment != Segment.TEMP) {
+            asm.append(
+                    """
+                    @%d
+                    D=D+A
+                    """.formatted(index)
+            );
+        }
+        
+        // IF not constant - address in D, read value in D from segment
+        if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT) {
+            asm.append(
+                    """
+                    @%d
+                    A=D+A
+                    D=M
+                    """.formatted(index)
             );
         }
 
@@ -150,20 +157,12 @@ public final class CodeWriter implements Closeable {
         return asm.toString();
     }
 
-    static String generateConstantPushOrPopCode(CommandType commandType, int index) {
-        checkPushOrPopCommand(commandType);
-
-        return commandType == CommandType.C_PUSH ? PUSH_FROM_D_TEMPLATE : POP_INTO_D_TEMPLATE;
-    }
-
-    static String segmentToRegister(Segment segmentType, int index) {
-        if (segmentType == Segment.THIS && (index != 0 && index != 1)) {
-            throw new IllegalStateException("Unsupported index %d for pointer segment".formatted(index));
-        }
-
+    static String segmentToRegister(Segment segmentType) {
         return switch (segmentType) {
             case LOCAL -> Constants.LOCAL_REGISTER;
             case ARGUMENT -> Constants.ARGUMENT_REGISTER;
+            case THIS -> Constants.THIS_REGISTER;
+            case THAT -> Constants.THAT_REGISTER;
             case CONSTANT -> null;
             default -> throw new UnsupportedOperationException("Unsupported segment: " + segmentType);
         };

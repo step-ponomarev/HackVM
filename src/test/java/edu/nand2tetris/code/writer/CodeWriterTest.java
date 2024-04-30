@@ -31,12 +31,10 @@ public final class CodeWriterTest {
             }
 
             Assertions.assertThrows(IllegalStateException.class, () -> CodeWriter.handlePushPop(type, Segment.LOCAL, 0));
-            Assertions.assertThrows(IllegalStateException.class, () -> CodeWriter.generateConstantPushOrPopCode(type, 0));
         }
 
         for (CommandType type : PUSH_POP_COMMAND_TYPES) {
             CodeWriter.handlePushPop(type, Segment.LOCAL, 0);
-            CodeWriter.generateConstantPushOrPopCode(type, 0);
         }
     }
 
