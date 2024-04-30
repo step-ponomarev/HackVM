@@ -1,12 +1,13 @@
 @ARG
 D=M
-@ADDR
+@0
+D=D+A
+@ADDR_SAVE
 M=D
 @SP
-D=M
 M=M-1
-A=D
+A=M
 D=M
-@ADDR
+@ADDR_SAVE
 A=M
 M=D
