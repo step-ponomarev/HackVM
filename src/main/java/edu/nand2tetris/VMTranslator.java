@@ -29,14 +29,12 @@ public class VMTranslator {
         try (Parser parser = new Parser(vmFile);
              CodeWriter codeWriter = new CodeWriter(outFile)
         ) {
-            codeWriter.init();
             while (parser.hasMoreLines()) {
                 parser.advance();
 
                 final CommandType commandType = parser.commandType();
                 switch (commandType) {
-                    case C_PUSH, C_POP ->
-                            codeWriter.writePushPop(commandType, Segment.parse(parser.arg1()), parser.arg2());
+                    case C_PUSH, C_POP -> codeWriter.writePushPop(commandType, Segment.parse(parser.arg1()), parser.arg2());
                     case C_ARITHMETIC -> codeWriter.writeArithmetic(parser.arg1());
                     default -> throw new IllegalStateException("Unsupported command type: " + commandType);
                 }

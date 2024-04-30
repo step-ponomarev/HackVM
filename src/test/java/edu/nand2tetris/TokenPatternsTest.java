@@ -5,8 +5,6 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import edu.nand2tetris.TokenPatterns;
-
 public final class TokenPatternsTest {
     private static final String[] SEGMENTS = {
             "argument",

@@ -10,7 +10,8 @@ public enum Segment {
     //depends of index 0==this 1==that
     THIS(TokenPatterns.THIS_SEGMENT_PATTERN, null),
     THAT(TokenPatterns.THAT_SEGMENT_PATTERN, null),
-    TEMP(TokenPatterns.TEMP_SEGMENT_PATTERN, "temp");
+    TEMP(TokenPatterns.TEMP_SEGMENT_PATTERN, "temp"),
+    POINTER(TokenPatterns.POINTER_SEGMENT_PATTERN, null);
 
     private final Pattern pattern;
     private final String register;
