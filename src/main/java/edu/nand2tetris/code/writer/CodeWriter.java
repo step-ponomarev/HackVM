@@ -118,6 +118,13 @@ public final class CodeWriter implements Closeable {
             );
 
             index = 0;
+        } else if (segment == Segment.STATIC) {
+            asm.append(
+                    """
+                    @%s
+                    D=A
+                    """.formatted("FileName." + index)
+            );
         } else {
             asm.append(
                     READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(
