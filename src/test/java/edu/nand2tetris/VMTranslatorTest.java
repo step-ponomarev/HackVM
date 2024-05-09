@@ -26,7 +26,7 @@ public final class VMTranslatorTest {
         try {
             for (Path vmFile : vmFiles) {
                 final String outFileName = vmFile.getFileName().toString().replace("vm", "asm");
-                final Path outFile = cmpPath.resolve(outFileName);
+                final Path outFile = testPath.resolve(outFileName);
                 VMTranslator.main(new String[]{vmFile.toAbsolutePath().toString(), outFile.toAbsolutePath().toString()});
 
                 Assertions.assertEquals(Files.readString(cmpPath.resolve(outFileName)), Files.readString(outFile));

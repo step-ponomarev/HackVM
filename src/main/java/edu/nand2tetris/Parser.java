@@ -6,10 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import edu.nand2tetris.CommandType;
-import edu.nand2tetris.Constants;
-import edu.nand2tetris.TokenPatterns;
-
 public final class Parser implements Closeable {
     private final BufferedReader fileReader;
 
@@ -93,7 +89,7 @@ public final class Parser implements Closeable {
         }
     }
 
-    String readNextInstruction() throws IOException {
+    private String readNextInstruction() throws IOException {
         String currentLine;
         while ((currentLine = fileReader.readLine()) != null) {
             currentLine = currentLine.trim();

@@ -11,61 +11,6 @@ import edu.nand2tetris.Constants;
 import edu.nand2tetris.Segment;
 
 public final class CodeWriter implements Closeable {
-    private static final String READ_SEGMENT_BASE_ADDRESS_TEMPLATE = """
-            @%s
-            D=M
-            """;
-    private static final String PUSH_FROM_D_TEMPLATE = """
-            @SP
-            A=M
-            M=D
-            @SP
-            M=M+1
-            """;
-    private static final String POP_INTO_D_TEMPLATE = """
-            @ADDR_SAVE
-            M=D
-            @SP
-            M=M-1
-            A=M
-            D=M
-            @ADDR_SAVE
-            A=M
-            M=D
-            """;
-
-    private static final String POP_INTO_ARG1_TEMPLATE = POP_INTO_D_TEMPLATE + """
-            @ARG1
-            M=D
-            """;
-
-    private static final String POP_INTO_ARG2_TEMPLATE = POP_INTO_D_TEMPLATE + """
-            @ARG2
-            M=D
-            """;
-
-    private static final String ADD_TEMPLATE = POP_INTO_ARG1_TEMPLATE + POP_INTO_ARG2_TEMPLATE + """
-            @ARG1
-            D=M
-            @ARG2
-            A=M
-            D=A+D
-            """ + PUSH_FROM_D_TEMPLATE;
-
-    private static final String SUB_TEMPLATE = POP_INTO_ARG1_TEMPLATE + POP_INTO_ARG2_TEMPLATE + """
-            @ARG2
-            D=M
-            @ARG1
-            A=M
-            D=D-A
-            """ + PUSH_FROM_D_TEMPLATE;
-
-    private static final String NEG_TEMPLATE = POP_INTO_ARG1_TEMPLATE + """
-            @ARG1
-            D=M
-            D=0-D
-            """ + PUSH_FROM_D_TEMPLATE;
-
     private final BufferedWriter writer;
 
     public CodeWriter(Path path) throws IOException {
@@ -79,9 +24,9 @@ public final class CodeWriter implements Closeable {
         }
 
         switch (command) {
-            case "add" -> writer.write(ADD_TEMPLATE);
-            case "neg" -> writer.write(NEG_TEMPLATE);
-            case "sub" -> writer.write(SUB_TEMPLATE);
+            case "add" -> writer.write(AsmTemplate.ADD_TEMPLATE);
+            case "neg" -> writer.write(AsmTemplate.NEG_TEMPLATE);
+            case "sub" -> writer.write(AsmTemplate.SUB_TEMPLATE);
             default -> throw new IllegalStateException("Unsupported command " + command);
         }
     }
@@ -97,66 +42,35 @@ public final class CodeWriter implements Closeable {
         checkPushOrPopCommand(commandType);
         final StringBuilder asm = new StringBuilder();
         if (segment == Segment.CONSTANT) {
-            asm.append(
-                    """
-                    @%d
-                    D=A
-                    """.formatted(index));
+            asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted(Integer.toString(index)));
         } else if (segment == Segment.TEMP) {
-            asm.append(
-                    """
-                    @%d
-                    D=A
-                    """.formatted(Constants.TEMP_BASE)
-            );
+            asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted(Byte.toString(Constants.TEMP_BASE)));
         } else if (segment == Segment.POINTER) {
-            asm.append(
-                    """
-                    @%s
-                    D=A
-                    """.formatted(index == 0 ? Constants.THIS_REGISTER : Constants.THAT_REGISTER)
-            );
-
+            asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted(index == 0 ? Constants.THIS_REGISTER : Constants.THAT_REGISTER));
             index = 0;
         } else if (segment == Segment.STATIC) {
-            asm.append(
-                    """
-                    @%s
-                    D=A
-                    """.formatted("FileName." + index)
-            );
+            asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted("FileName." + index));
         } else {
             asm.append(
-                    READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(
+                    AsmTemplate.READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(
                             segmentToRegister(segment)
                     )
             );
         }
 
         if (commandType == CommandType.C_POP) {
-                asm.append(
-                        """
-                        @%d
-                        D=D+A
-                        """.formatted(index)
-                );
+            asm.append(AsmTemplate.ADD_TO_D.formatted(index));
         }
 
         // IF not constant - address in D, read value in D from segment
         if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT) {
-                asm.append(
-                        """
-                        @%d
-                        A=D+A
-                        D=M
-                        """.formatted(index)
-                );
+            asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX.formatted(index));
         }
 
         asm.append(
                 commandType == CommandType.C_PUSH
-                        ? PUSH_FROM_D_TEMPLATE
-                        : POP_INTO_D_TEMPLATE
+                        ? AsmTemplate.PUSH_FROM_D_TEMPLATE
+                        : AsmTemplate.POP_INTO_D_TEMPLATE
         );
 
         return asm.toString();
