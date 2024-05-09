@@ -7,11 +7,6 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import edu.nand2tetris.CommandType;
-import edu.nand2tetris.Constants;
-import edu.nand2tetris.Parser;
-import edu.nand2tetris.Resources;
-
 
 public final class ParserTest {
     @Test
