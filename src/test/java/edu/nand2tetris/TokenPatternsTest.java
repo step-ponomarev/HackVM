@@ -65,16 +65,6 @@ public final class TokenPatternsTest {
         testValuesByPattern(ARITHMETIC_COMMANDS, TokenPatterns.ARITHMETIC_LOGICAL_COMMAND_PATTERN);
     }
 
-    @Test
-    public void testComparisonCommandsPattern() {
-        testValuesByPattern(COMPARISON_COMMANDS, TokenPatterns.COMPARISON_COMMAND_PATTERN);
-    }
-
-    @Test
-    public void testLogicalCommandsPattern() {
-        testValuesByPattern(LOGICAL_COMMANDS, TokenPatterns.LOGICAL_COMMAND_PATTERN);
-    }
-
     private static void testValuesByPattern(String[] values, Pattern pattern) {
         for (String value : values) {
             Assertions.assertTrue(pattern.matcher(value).matches());

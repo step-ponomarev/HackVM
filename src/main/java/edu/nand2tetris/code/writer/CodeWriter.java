@@ -27,6 +27,7 @@ public final class CodeWriter implements Closeable {
             case "add" -> writer.write(AsmTemplate.ADD_TEMPLATE);
             case "neg" -> writer.write(AsmTemplate.NEG_TEMPLATE);
             case "sub" -> writer.write(AsmTemplate.SUB_TEMPLATE);
+            case "eq" -> writer.write(AsmTemplate.EQ_TEMPLATE);
             default -> throw new IllegalStateException("Unsupported command " + command);
         }
     }
@@ -59,12 +60,12 @@ public final class CodeWriter implements Closeable {
         }
 
         if (commandType == CommandType.C_POP) {
-            asm.append(AsmTemplate.ADD_TO_D.formatted(index));
+            asm.append(AsmTemplate.ADD_TO_D_TEMPLATE.formatted(index));
         }
 
         // IF not constant - address in D, read value in D from segment
         if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT) {
-            asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX.formatted(index));
+            asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX_TEMPLATE.formatted(index));
         }
 
         asm.append(

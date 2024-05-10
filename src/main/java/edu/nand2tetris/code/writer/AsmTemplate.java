@@ -61,16 +61,25 @@ final class AsmTemplate {
             D=A
             """;
 
-    static final String ADD_TO_D = """
+    static final String ADD_TO_D_TEMPLATE = """
             @%d
             D=D+A
             """;
 
-    static final String LOAD_FROM_D_ADDRESS_AND_INDEX = """
+    static final String LOAD_FROM_D_ADDRESS_AND_INDEX_TEMPLATE = """
             @%d
             A=D+A
             D=M
             """;
+    
+    static final String EQ_TEMPLATE = SUB_TEMPLATE + POP_INTO_D_TEMPLATE + """
+            @JNE_LABEL
+            D;JEQ
+            @1
+            (JNE_LABEL)
+            @0
+            D=A
+            """ + PUSH_FROM_D_TEMPLATE;
     
     private AsmTemplate() {}
 }

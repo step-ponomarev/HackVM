@@ -36,31 +36,22 @@ public final class TokenPatterns {
     private static final Pattern GT_COMMAND_PATTERN = Pattern.compile("^gt$");
 
     private static final Pattern LT_COMMAND_PATTERN = Pattern.compile("^lt$");
-
-    static final Pattern COMPARISON_COMMAND_PATTERN = Pattern.compile("^(%s|%s|%s)".formatted(
-            EQ_COMMAND_PATTERN.pattern().substring(1, EQ_COMMAND_PATTERN.pattern().length() - 1),
-            GT_COMMAND_PATTERN.pattern().substring(1, GT_COMMAND_PATTERN.pattern().length() - 1),
-            LT_COMMAND_PATTERN.pattern().substring(1, LT_COMMAND_PATTERN.pattern().length() - 1)
-    ));
-
     private static final Pattern AND_COMMAND_PATTERN = Pattern.compile("^and$");
 
     private static final Pattern OR_COMMAND_PATTERN = Pattern.compile("^or$");
 
     private static final Pattern NOT_COMMAND_PATTERN = Pattern.compile("^not$");
 
-    static final Pattern LOGICAL_COMMAND_PATTERN = Pattern.compile("^(%s|%s|%s)".formatted(
-            AND_COMMAND_PATTERN.pattern().substring(1, AND_COMMAND_PATTERN.pattern().length() - 1),
-            OR_COMMAND_PATTERN.pattern().substring(1, OR_COMMAND_PATTERN.pattern().length() - 1),
-            NOT_COMMAND_PATTERN.pattern().substring(1, NOT_COMMAND_PATTERN.pattern().length() - 1)
-    ));
-
-    static final Pattern ARITHMETIC_LOGICAL_COMMAND_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s)".formatted(
+    static final Pattern ARITHMETIC_LOGICAL_COMMAND_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s|%s|%s|%s)$".formatted(
             ADD_COMMAND.pattern().substring(1, ADD_COMMAND.pattern().length() - 1),
             SUB_COMMAND_PATTERN.pattern().substring(1, SUB_COMMAND_PATTERN.pattern().length() - 1),
             NEG_COMMAND_PATTERN.pattern().substring(1, NEG_COMMAND_PATTERN.pattern().length() - 1),
-            COMPARISON_COMMAND_PATTERN.pattern().substring(1, COMPARISON_COMMAND_PATTERN.pattern().length() - 1),
-            LOGICAL_COMMAND_PATTERN.pattern().substring(1, LOGICAL_COMMAND_PATTERN.pattern().length() - 1)
+            AND_COMMAND_PATTERN.pattern().substring(1, AND_COMMAND_PATTERN.pattern().length() - 1),
+            OR_COMMAND_PATTERN.pattern().substring(1, OR_COMMAND_PATTERN.pattern().length() - 1),
+            NOT_COMMAND_PATTERN.pattern().substring(1, NOT_COMMAND_PATTERN.pattern().length() - 1),
+            EQ_COMMAND_PATTERN.pattern().substring(1, EQ_COMMAND_PATTERN.pattern().length() - 1),
+            GT_COMMAND_PATTERN.pattern().substring(1, GT_COMMAND_PATTERN.pattern().length() - 1),
+            LT_COMMAND_PATTERN.pattern().substring(1, LT_COMMAND_PATTERN.pattern().length() - 1)
     ));
 
     static final Pattern PUSH_COMMAND_PATTERN = Pattern.compile("^push %s \\d+$".formatted(
@@ -73,7 +64,7 @@ public final class TokenPatterns {
             )
     );
 
-    static Pattern COMMENT = Pattern.compile("^\\/{2}.*$");
+    static final Pattern COMMENT = Pattern.compile("^\\/{2}.*$");
 
     private TokenPatterns() {}
 }
