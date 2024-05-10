@@ -10,7 +10,7 @@ public final class TokenPatterns {
     public static final Pattern THIS_SEGMENT_PATTERN = Pattern.compile("^this$");
     public static final Pattern THAT_SEGMENT_PATTERN = Pattern.compile("^that$");
     public static final Pattern TEMP_SEGMENT_PATTERN = Pattern.compile("^temp$");
-    
+
     public static final Pattern POINTER_SEGMENT_PATTERN = Pattern.compile("^pointer$");
 
     static final Pattern SEGMENT_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s|%s|%s)$".formatted(
@@ -30,12 +30,6 @@ public final class TokenPatterns {
     private static final Pattern SUB_COMMAND_PATTERN = Pattern.compile("^sub$");
 
     private static final Pattern NEG_COMMAND_PATTERN = Pattern.compile("^neg$");
-
-    static final Pattern ARITHMETIC_COMMAND_PATTERN = Pattern.compile("^(%s|%s|%s)".formatted(
-            ADD_COMMAND.pattern().substring(1, ADD_COMMAND.pattern().length() - 1),
-            SUB_COMMAND_PATTERN.pattern().substring(1, SUB_COMMAND_PATTERN.pattern().length() - 1),
-            NEG_COMMAND_PATTERN.pattern().substring(1, NEG_COMMAND_PATTERN.pattern().length() - 1)
-    ));
 
     private static final Pattern EQ_COMMAND_PATTERN = Pattern.compile("^eq$");
 
@@ -59,6 +53,14 @@ public final class TokenPatterns {
             AND_COMMAND_PATTERN.pattern().substring(1, AND_COMMAND_PATTERN.pattern().length() - 1),
             OR_COMMAND_PATTERN.pattern().substring(1, OR_COMMAND_PATTERN.pattern().length() - 1),
             NOT_COMMAND_PATTERN.pattern().substring(1, NOT_COMMAND_PATTERN.pattern().length() - 1)
+    ));
+
+    static final Pattern ARITHMETIC_LOGICAL_COMMAND_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s)".formatted(
+            ADD_COMMAND.pattern().substring(1, ADD_COMMAND.pattern().length() - 1),
+            SUB_COMMAND_PATTERN.pattern().substring(1, SUB_COMMAND_PATTERN.pattern().length() - 1),
+            NEG_COMMAND_PATTERN.pattern().substring(1, NEG_COMMAND_PATTERN.pattern().length() - 1),
+            COMPARISON_COMMAND_PATTERN.pattern().substring(1, COMPARISON_COMMAND_PATTERN.pattern().length() - 1),
+            LOGICAL_COMMAND_PATTERN.pattern().substring(1, LOGICAL_COMMAND_PATTERN.pattern().length() - 1)
     ));
 
     static final Pattern PUSH_COMMAND_PATTERN = Pattern.compile("^push %s \\d+$".formatted(

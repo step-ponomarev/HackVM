@@ -62,7 +62,7 @@ public final class TokenPatternsTest {
 
     @Test
     public void testArithmeticCommandsPattern() {
-        testValuesByPattern(ARITHMETIC_COMMANDS, TokenPatterns.ARITHMETIC_COMMAND_PATTERN);
+        testValuesByPattern(ARITHMETIC_COMMANDS, TokenPatterns.ARITHMETIC_LOGICAL_COMMAND_PATTERN);
     }
 
     @Test

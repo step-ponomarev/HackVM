@@ -3,7 +3,7 @@ package edu.nand2tetris;
 import java.util.regex.Pattern;
 
 public enum CommandType {
-    C_ARITHMETIC(TokenPatterns.ARITHMETIC_COMMAND_PATTERN),
+    C_ARITHMETIC(TokenPatterns.ARITHMETIC_LOGICAL_COMMAND_PATTERN),
     C_PUSH(TokenPatterns.PUSH_COMMAND_PATTERN),
     C_POP(TokenPatterns.POP_COMMAND_PATTERN),
     C_LABEL(null),
