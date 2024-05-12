@@ -95,7 +95,7 @@ public final class CodeWriter implements Closeable {
         asm.append(
                 commandType == CommandType.C_PUSH
                         ? AsmTemplate.PUSH_FROM_D_TEMPLATE
-                        : AsmTemplate.POP_INTO_D_TEMPLATE
+                        : AsmTemplate.POP_INTO_D_AND_SAVE_ADDRESS_TEMPLATE
         );
 
         return asm.toString();

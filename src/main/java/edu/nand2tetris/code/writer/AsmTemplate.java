@@ -12,24 +12,22 @@ final class AsmTemplate {
             @SP
             M=M+1
             """;
-    //TODO:  Не помню зачем тут работа с ADDR_SAVE, какой-то бред
-    static final String POP_INTO_D_TEMPLATE = """
-            @ADDR_SAVE
-            M=D
+    
+      static final String JUST_POP_INTO_D_TEMPLATE = """
             @SP
             M=M-1
             A=M
             D=M
-            @ADDR_SAVE
-            A=M
-            M=D
             """;
-
-    static final String JUST_POP_INTO_D_TEMPLATE = """
-            @SP
-            M=M-1
+    static final String POP_INTO_D_AND_SAVE_ADDRESS_TEMPLATE = """
+            @ADDR_SAVE
+            M=D
+            """ + 
+            JUST_POP_INTO_D_TEMPLATE + 
+            """
+            @ADDR_SAVE
             A=M
-            D=M
+            M=D
             """;
 
     static final String POP_INTO_ARG1_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
