@@ -5,16 +5,28 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.nand2tetris.CommandType;
 import edu.nand2tetris.Constants;
 import edu.nand2tetris.Segment;
 
 public final class CodeWriter implements Closeable {
+    private static final String[] COMPARISON_COMMANDS = {
+            "eq",
+            "gt",
+            "lt"
+    };
+    private final Map<String, Integer> labelCommandToIndex = new HashMap<>();
     private final BufferedWriter writer;
 
     public CodeWriter(Path path) throws IOException {
         this.writer = Files.newBufferedWriter(path);
+
+        for (String command : COMPARISON_COMMANDS) {
+            labelCommandToIndex.put(command, 1);
+        }
     }
 
     public void writeArithmetic(String command) throws IOException {
@@ -23,11 +35,23 @@ public final class CodeWriter implements Closeable {
             throw new IllegalStateException("Illegal command type: " + commandType + " command " + command);
         }
 
+        int index = -1;
+        if (labelCommandToIndex.containsKey(command)) {
+            index = labelCommandToIndex.get(command);
+
+            labelCommandToIndex.put(command, index + 1);
+        }
+
         switch (command) {
             case "add" -> writer.write(AsmTemplate.ADD_TEMPLATE);
             case "neg" -> writer.write(AsmTemplate.NEG_TEMPLATE);
             case "sub" -> writer.write(AsmTemplate.SUB_TEMPLATE);
-            case "eq" -> writer.write(AsmTemplate.EQ_TEMPLATE);
+            case "eq" -> writer.write(AsmTemplate.EQ_TEMPLATE.formatted(index, index, index, index));
+            case "lt" -> writer.write(AsmTemplate.LT_TEMPLATE.formatted(index, index, index, index));
+            case "gt" -> writer.write(AsmTemplate.GT_TEMPLATE.formatted(index, index, index, index));
+            case "and" -> writer.write(AsmTemplate.AND_TEMPLATE);
+            case "or" -> writer.write(AsmTemplate.OR_TEMPLATE);
+            case "not" -> writer.write(AsmTemplate.NOT_TEMPLATE);
             default -> throw new IllegalStateException("Unsupported command " + command);
         }
     }

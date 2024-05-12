@@ -12,6 +12,7 @@ final class AsmTemplate {
             @SP
             M=M+1
             """;
+    //TODO:  Не помню зачем тут работа с ADDR_SAVE, какой-то бред
     static final String POP_INTO_D_TEMPLATE = """
             @ADDR_SAVE
             M=D
@@ -24,12 +25,19 @@ final class AsmTemplate {
             M=D
             """;
 
-    static final String POP_INTO_ARG1_TEMPLATE = POP_INTO_D_TEMPLATE + """
+    static final String JUST_POP_INTO_D_TEMPLATE = """
+            @SP
+            M=M-1
+            A=M
+            D=M
+            """;
+
+    static final String POP_INTO_ARG1_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
             @ARG1
             M=D
             """;
 
-    static final String POP_INTO_ARG2_TEMPLATE = POP_INTO_D_TEMPLATE + """
+    static final String POP_INTO_ARG2_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
             @ARG2
             M=D
             """;
@@ -49,11 +57,8 @@ final class AsmTemplate {
             A=M
             D=D-A
             """ + PUSH_FROM_D_TEMPLATE;
-
-    static final String NEG_TEMPLATE = POP_INTO_ARG1_TEMPLATE + """
-            @ARG1
-            D=M
-            D=0-D
+    static final String NEG_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
+            D=-D
             """ + PUSH_FROM_D_TEMPLATE;
 
     static final String LOAD_D_TEMPLATE = """
@@ -71,15 +76,60 @@ final class AsmTemplate {
             A=D+A
             D=M
             """;
-    
-    static final String EQ_TEMPLATE = SUB_TEMPLATE + POP_INTO_D_TEMPLATE + """
-            @JNE_LABEL
+
+    static final String EQ_TEMPLATE = SUB_TEMPLATE + JUST_POP_INTO_D_TEMPLATE + """         
+            @JEQ_LABEL_%d
             D;JEQ
-            @1
-            (JNE_LABEL)
-            @0
-            D=A
+            D=0
+            @JEQ_END_%d
+            0;JMP
+            (JEQ_LABEL_%d)
+            D=-1
+            (JEQ_END_%d)
             """ + PUSH_FROM_D_TEMPLATE;
-    
-    private AsmTemplate() {}
+
+    static final String LT_TEMPLATE = SUB_TEMPLATE + JUST_POP_INTO_D_TEMPLATE + """
+            @JLT_LABEL_%d
+            D;JLT
+            D=0
+            @JLT_END_%d
+            0;JMP
+            (JLT_LABEL_%d)
+            D=-1
+            (JLT_END_%d)
+            """ + PUSH_FROM_D_TEMPLATE;
+
+    static final String GT_TEMPLATE = SUB_TEMPLATE + JUST_POP_INTO_D_TEMPLATE + """
+            @JGT_LABEL_%d
+            D;JGT
+            D=0
+            @JGT_END_%d
+            0;JMP
+            (JGT_LABEL_%d)
+            D=-1
+            (JGT_END_%d)
+            """ + PUSH_FROM_D_TEMPLATE;
+
+    static final String AND_TEMPLATE = POP_INTO_ARG1_TEMPLATE + POP_INTO_ARG2_TEMPLATE + """
+            @ARG2
+            D=M
+            @ARG1
+            A=M
+            D=D&A
+            """ + PUSH_FROM_D_TEMPLATE;
+
+    static final String OR_TEMPLATE = POP_INTO_ARG1_TEMPLATE + POP_INTO_ARG2_TEMPLATE + """
+            @ARG2
+            D=M
+            @ARG1
+            A=M
+            D=D|A
+            """ + PUSH_FROM_D_TEMPLATE;
+
+    static final String NOT_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
+            D=!D
+            """ + PUSH_FROM_D_TEMPLATE;
+
+    private AsmTemplate() {
+    }
 }
