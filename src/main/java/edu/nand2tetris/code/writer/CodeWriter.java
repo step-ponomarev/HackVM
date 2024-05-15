@@ -62,7 +62,35 @@ public final class CodeWriter implements Closeable {
                 handlePushPop(commandType, segment, index)
         );
     }
+    
+    public void writeLabel(String label) {
+        
+    }
+    
+    public void writeGoto(String label) {
+        
+    }
+    
+    public void writeIf(String label) {
+        
+    }
 
+    public void writeFunction(String functionName, int nArgs) {
+        
+    }
+    
+    public void writeCall() {
+        
+    }
+    
+    public void writeReturn() {
+        
+    }
+    
+    public void setFileName(String filename) {
+        
+    }
+    
     static String handlePushPop(CommandType commandType, Segment segment, int index) {
         checkPushOrPopCommand(commandType);
         final StringBuilder asm = new StringBuilder();
