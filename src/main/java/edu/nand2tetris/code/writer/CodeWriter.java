@@ -24,6 +24,8 @@ public final class CodeWriter implements Closeable {
     //TODO: код инициализации базовых адресов
     private final boolean generateBootstrapCode;
 
+    private String fileName;
+
     public CodeWriter(Path path) throws IOException {
         this(path, false);
     }
@@ -38,7 +40,7 @@ public final class CodeWriter implements Closeable {
     }
 
     public void setFileName(String filename) {
-
+        this.fileName = fileName;
     }
 
     public void writeArithmetic(String command) throws IOException {
@@ -75,16 +77,16 @@ public final class CodeWriter implements Closeable {
         );
     }
 
-    public void writeLabel(String label) {
-
+    public void writeLabel(String label) throws IOException {
+        writer.write(AsmTemplate.LABEL_TEMPLATE.formatted(label));
     }
 
-    public void writeGoto(String label) {
-
+    public void writeGoto(String label) throws IOException {
+        writer.write(AsmTemplate.GOTO_TEMPLATE.formatted(label));
     }
 
-    public void writeIf(String label) {
-
+    public void writeIf(String label) throws IOException {
+        writer.write(AsmTemplate.IF_TEMPLATE.formatted(label));
     }
 
     public void writeFunction(String functionName, int nArgs) {

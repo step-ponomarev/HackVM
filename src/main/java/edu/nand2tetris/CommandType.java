@@ -8,7 +8,7 @@ public enum CommandType {
     C_POP(TokenPatterns.POP_COMMAND_PATTERN),
     C_LABEL(TokenPatterns.LABEL_COMMAND),
     C_GOTO(null),
-    C_IF(null),
+    C_IF(TokenPatterns.IF_COMMAND),
     C_FUNCTION(null),
     C_RETURN(null),
     C_CALL(null);

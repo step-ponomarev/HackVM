@@ -11,6 +11,7 @@ public class VMTranslator {
     private static final String VM_SUFFIX = ".vm";
 
     public static void main(String[] args) throws IOException {
+        //TODO: флаги компиляции
         if (args.length < 1) {
             throw new IllegalArgumentException("Expected 1 arg, but got: " + args.length);
         }
@@ -116,6 +117,7 @@ public class VMTranslator {
                 case C_PUSH, C_POP -> codeWriter.writePushPop(commandType, Segment.parse(parser.arg1()), parser.arg2());
                 case C_ARITHMETIC -> codeWriter.writeArithmetic(parser.arg1());
                 case C_LABEL -> codeWriter.writeLabel(parser.arg1());
+                case C_IF -> codeWriter.writeIf(parser.arg1());
                 default -> throw new IllegalStateException("Unsupported command type: " + commandType);
             }
         }

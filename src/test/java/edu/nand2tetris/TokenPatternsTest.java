@@ -23,18 +23,6 @@ public final class TokenPatternsTest {
             "neg"
     };
 
-    private static final String[] COMPARISON_COMMANDS = {
-            "eq",
-            "gt",
-            "lt"
-    };
-
-    private static final String[] LOGICAL_COMMANDS = {
-            "and",
-            "or",
-            "not"
-    };
-
     @Test
     public void testSegmentPattern() {
         testValuesByPattern(SEGMENTS, TokenPatterns.SEGMENT_PATTERN);
