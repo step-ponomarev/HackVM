@@ -15,6 +15,8 @@ public final class TokenPatterns {
 
     public static final Pattern LABEL_COMMAND = Pattern.compile("^label\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
     public static final Pattern IF_COMMAND = Pattern.compile("^if-goto\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
+    
+    public static final Pattern GOTO = Pattern.compile("^goto\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
 
     public static final Pattern POINTER_SEGMENT_PATTERN = Pattern.compile("^pointer$");
 

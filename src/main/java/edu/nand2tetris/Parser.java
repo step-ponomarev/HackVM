@@ -71,8 +71,7 @@ public final class Parser implements Closeable {
         switch (commandType) {
             case C_ARITHMETIC -> handleArithmetic(command);
             case C_PUSH, C_POP -> handlePushPop(command);
-            case C_LABEL -> handleLabel(command);
-            case C_IF -> handleIfGoto(command);
+            case C_LABEL, C_IF, C_GOTO -> handleLabel(command);
             default -> throw new UnsupportedOperationException("Unsupported operation " + commandType);
         }
     }
@@ -82,11 +81,6 @@ public final class Parser implements Closeable {
     }
 
     private void handleLabel(String command) {
-        final String[] split = command.split("\s+");
-        this.arg1 = split[1];
-    }
-
-    private void handleIfGoto(String command) {
         final String[] split = command.split("\s+");
         this.arg1 = split[1];
     }

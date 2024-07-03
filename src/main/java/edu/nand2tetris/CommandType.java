@@ -7,7 +7,7 @@ public enum CommandType {
     C_PUSH(TokenPatterns.PUSH_COMMAND_PATTERN),
     C_POP(TokenPatterns.POP_COMMAND_PATTERN),
     C_LABEL(TokenPatterns.LABEL_COMMAND),
-    C_GOTO(null),
+    C_GOTO(TokenPatterns.GOTO),
     C_IF(TokenPatterns.IF_COMMAND),
     C_FUNCTION(null),
     C_RETURN(null),
