@@ -11,6 +11,13 @@ public final class TokenPatterns {
     public static final Pattern THAT_SEGMENT_PATTERN = Pattern.compile("^that$");
     public static final Pattern TEMP_SEGMENT_PATTERN = Pattern.compile("^temp$");
 
+    private static Pattern SYMBOL = Pattern.compile("^[a-zA-Z_.$:][a-zA-Z_.$:0-9]*$");
+
+    public static final Pattern LABEL_COMMAND = Pattern.compile("^label\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
+    public static final Pattern IF_COMMAND = Pattern.compile("^if-goto\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
+    
+    public static final Pattern GOTO = Pattern.compile("^goto\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
+
     public static final Pattern POINTER_SEGMENT_PATTERN = Pattern.compile("^pointer$");
 
     static final Pattern SEGMENT_PATTERN = Pattern.compile("^(%s|%s|%s|%s|%s|%s|%s|%s)$".formatted(

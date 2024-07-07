@@ -128,6 +128,19 @@ final class AsmTemplate {
             D=!D
             """ + PUSH_FROM_D_TEMPLATE;
 
-    private AsmTemplate() {
-    }
+    static final String LABEL_TEMPLATE = """
+            (%s)
+            """;
+    
+    static final String GOTO_TEMPLATE = """
+            @%s
+            0;JMP
+            """;
+    
+    static final String IF_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
+            @%s
+            D;JGT
+            """;
+
+    private AsmTemplate() {}
 }

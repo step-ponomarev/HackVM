@@ -21,12 +21,26 @@ public final class CodeWriter implements Closeable {
     private final Map<String, Integer> labelCommandToIndex = new HashMap<>();
     private final BufferedWriter writer;
 
+    //TODO: код инициализации базовых адресов
+    private final boolean generateBootstrapCode;
+
+    private String fileName;
+
     public CodeWriter(Path path) throws IOException {
+        this(path, false);
+    }
+
+    public CodeWriter(Path path, boolean generateBootstrapCode) throws IOException {
         this.writer = Files.newBufferedWriter(path);
+        this.generateBootstrapCode = generateBootstrapCode;
 
         for (String command : COMPARISON_COMMANDS) {
             labelCommandToIndex.put(command, 1);
         }
+    }
+
+    public void setFileName(String filename) {
+        this.fileName = fileName;
     }
 
     public void writeArithmetic(String command) throws IOException {
@@ -61,6 +75,30 @@ public final class CodeWriter implements Closeable {
         writer.write(
                 handlePushPop(commandType, segment, index)
         );
+    }
+
+    public void writeLabel(String label) throws IOException {
+        writer.write(AsmTemplate.LABEL_TEMPLATE.formatted(label));
+    }
+
+    public void writeGoto(String label) throws IOException {
+        writer.write(AsmTemplate.GOTO_TEMPLATE.formatted(label));
+    }
+
+    public void writeIf(String label) throws IOException {
+        writer.write(AsmTemplate.IF_TEMPLATE.formatted(label));
+    }
+
+    public void writeFunction(String functionName, int nArgs) {
+
+    }
+
+    public void writeCall() {
+
+    }
+
+    public void writeReturn() {
+
     }
 
     static String handlePushPop(CommandType commandType, Segment segment, int index) {
