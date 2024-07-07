@@ -98,11 +98,7 @@ public final class CodeWriter implements Closeable {
     }
 
     public void writeCall(String fnName, int argCount) {
-        Integer count = functionNameToCallCount.get(fnName);
-        if (count == null) {
-            count = 0;
-        }
-        
+        final Integer count = functionNameToCallCount.getOrDefault(fnName, 0);
         final String returnLabelName = fnName + "$ret." + count;
         functionNameToCallCount.put(fnName, count + 1);
         
