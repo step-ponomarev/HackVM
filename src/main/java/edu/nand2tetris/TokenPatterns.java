@@ -21,6 +21,7 @@ public final class TokenPatterns {
     public static final Pattern FUNCTION_COMMAND = Pattern.compile("^function\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")" + "\\s+\\d+$");
     
     public static final Pattern RETURN_COMMAND = Pattern.compile("^return$");
+    public static final Pattern CALL_COMMAND = Pattern.compile("^call\\s+" + "(" + SYMBOL.pattern().substring(1, SYMBOL.pattern().length() - 1) + ")$");
     
 
     public static final Pattern POINTER_SEGMENT_PATTERN = Pattern.compile("^pointer$");

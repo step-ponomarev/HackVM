@@ -1,4 +1,4 @@
-(SimpleFunction.SimpleFunction.test)
+(SimpleFunction.test)
 @LCL
 D=M
 @0

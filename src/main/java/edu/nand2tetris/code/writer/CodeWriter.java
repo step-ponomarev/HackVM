@@ -23,19 +23,12 @@ public final class CodeWriter implements Closeable {
 
     private final StringBuilder code = new StringBuilder();
     private StringBuilder currentFunction = new StringBuilder();
-
-    //TODO: код инициализации базовых адресов
-    private final boolean generateBootstrapCode;
-
     private String fileName;
+    
+    private final Map<String, Integer> functionNameToCallCount = new HashMap<>();
 
     public CodeWriter(Path path) throws IOException {
-        this(path, false);
-    }
-
-    public CodeWriter(Path path, boolean generateBootstrapCode) throws IOException {
         this.writer = Files.newBufferedWriter(path);
-        this.generateBootstrapCode = generateBootstrapCode;
 
         for (String command : COMPARISON_COMMANDS) {
             labelCommandToIndex.put(command, 1);
@@ -46,7 +39,7 @@ public final class CodeWriter implements Closeable {
         this.fileName = fileName;
     }
 
-    public void writeArithmetic(String command) throws IOException {
+    public void writeArithmetic(String command) {
         final CommandType commandType = CommandType.parse(command);
         if (commandType != CommandType.C_ARITHMETIC) {
             throw new IllegalStateException("Illegal command type: " + commandType + " command " + command);
@@ -90,13 +83,13 @@ public final class CodeWriter implements Closeable {
 
     public void writeIf(String label) {
         write(
-           AsmTemplate.IF_TEMPLATE.formatted(label)     
+                AsmTemplate.IF_TEMPLATE.formatted(label)
         );
     }
 
     public void writeFunction(String functionName, int nArgs) {
         final StringBuilder function = new StringBuilder();
-        function.append(AsmTemplate.LABEL_TEMPLATE.formatted(this.fileName + "." + functionName));
+        function.append(AsmTemplate.LABEL_TEMPLATE.formatted(functionName));
         for (int i = 0; i < nArgs; i++) {
             function.append(handlePushPop(CommandType.C_PUSH, Segment.LOCAL, i));
         }
@@ -104,15 +97,25 @@ public final class CodeWriter implements Closeable {
         currentFunction.append(function);
     }
 
-    public void writeCall() {
-
+    public void writeCall(String fnName, int argCount) {
+        Integer count = functionNameToCallCount.get(fnName);
+        if (count == null) {
+            count = 0;
+        }
+        
+        final String returnLabelName = fnName + "$ret." + count;
+        functionNameToCallCount.put(fnName, count + 1);
+        
+//        @returnLabel == IP + N(весь код, связанный с сохранением стекфрейма + 1
+        
+        // (label)
     }
 
     public void writeReturn() {
         currentFunction.append(
                 AsmTemplate.POP_STACK_FRAME_TEMPLATE
         );
-        
+
         code.insert(0, currentFunction);
         currentFunction = new StringBuilder();
     }
@@ -174,7 +177,7 @@ public final class CodeWriter implements Closeable {
         );
         writer.close();
     }
-    
+
     private void write(String code) {
         if (!currentFunction.isEmpty()) {
             currentFunction.append(code);

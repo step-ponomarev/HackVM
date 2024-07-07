@@ -11,7 +11,7 @@ public enum CommandType {
     C_IF(TokenPatterns.IF_COMMAND),
     C_FUNCTION(TokenPatterns.FUNCTION_COMMAND),
     C_RETURN(TokenPatterns.RETURN_COMMAND),
-    C_CALL(null);
+    C_CALL(TokenPatterns.CALL_COMMAND);
 
     private Pattern commandPattern;
 
