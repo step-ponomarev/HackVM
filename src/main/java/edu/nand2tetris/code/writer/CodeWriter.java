@@ -39,7 +39,7 @@ public final class CodeWriter implements Closeable {
         }
     }
 
-    public void setFileName(String filename) {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
@@ -89,16 +89,20 @@ public final class CodeWriter implements Closeable {
         writer.write(AsmTemplate.IF_TEMPLATE.formatted(label));
     }
 
-    public void writeFunction(String functionName, int nArgs) {
-
+    //TODO: При объявлении функции сохранять имя функции и количество аргументов
+    public void writeFunction(String functionName, int nArgs) throws IOException {
+        this.writeLabel(this.fileName + "." + functionName);
+        for (int i = 0; i < nArgs; i++) {
+            handlePushPop(CommandType.C_PUSH, Segment.LOCAL, i);
+        }
     }
 
     public void writeCall() {
 
     }
 
-    public void writeReturn() {
-
+    public void writeReturn() throws IOException {
+        writer.write(AsmTemplate.POP_STACK_FRAME_TEMPLATE);
     }
 
     static String handlePushPop(CommandType commandType, Segment segment, int index) {

@@ -26,6 +26,13 @@ public final class VMTranslatorTest {
         testVmFiles(translatorPath, vmFiles);
     }
 
+    @Test
+    public void testSimpleFunction() throws IOException {
+        final Path translatorPath = Resources.RESOURCES_DIR.resolve("function");
+        final Iterator<Path> vmFiles = getVmFiles(translatorPath);
+        testVmFiles(translatorPath, vmFiles);
+    }
+
     public static Iterator<Path> getVmFiles(Path path) throws IOException {
         return Files.list(path)
                 .filter(f -> VM_FILE_NAME.matcher(f.getFileName().toString()).matches())
@@ -42,7 +49,7 @@ public final class VMTranslatorTest {
                 final Path vmFile = files.next();
                 final String outFileName = vmFile.getFileName().toString().replace("vm", "asm");
                 final Path outFile = testPath.resolve(outFileName);
-                
+
                 try {
                     VMTranslator.main(new String[]{vmFile.toAbsolutePath().toString(), outFile.toAbsolutePath().toString()});
                     Assertions.assertEquals(Files.readString(cmpPath.resolve(outFileName)), Files.readString(outFile));

@@ -10,12 +10,14 @@ import edu.nand2tetris.code.writer.CodeWriter;
 public class VMTranslator {
     private static final String VM_SUFFIX = ".vm";
 
+    /**
+     * arg[0] - source VM file or dir with VM files (required)
+     * arg[1] - out VM file name (not required)
+     * 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
-        //TODO: флаги компиляции
-        if (args.length < 1) {
-            throw new IllegalArgumentException("Expected 1 arg, but got: " + args.length);
-        }
-
         final Path vmFileOrDir = Paths.get(args[0]);
         if (Files.notExists(vmFileOrDir)) {
             throw new IllegalStateException("File does not exist: " + vmFileOrDir);
@@ -66,6 +68,10 @@ public class VMTranslator {
         }
 
         try (CodeWriter codeWriter = new CodeWriter(outFile)) {
+            String fileName = srcFile.getFileName().toString();
+            fileName = fileName.substring(0, fileName.length() - 3);
+            codeWriter.setFileName(fileName);
+
             try (Parser parser = new Parser(srcFile)) {
                 handleParser(parser, codeWriter);
             }
@@ -119,6 +125,8 @@ public class VMTranslator {
                 case C_LABEL -> codeWriter.writeLabel(parser.arg1());
                 case C_GOTO -> codeWriter.writeGoto(parser.arg1());
                 case C_IF -> codeWriter.writeIf(parser.arg1());
+                case C_FUNCTION -> codeWriter.writeFunction(parser.arg1(), parser.arg2());
+                case C_RETURN -> codeWriter.writeReturn();
                 default -> throw new IllegalStateException("Unsupported command type: " + commandType);
             }
         }

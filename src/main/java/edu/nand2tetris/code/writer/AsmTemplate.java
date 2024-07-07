@@ -142,5 +142,58 @@ final class AsmTemplate {
             D;JGT
             """;
 
+    private static final String INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE = """
+            @%d
+            D=A
+            @frame
+            A=M-D
+            D=M
+            @%s
+            M=D
+            """;
+    
+    static final String POP_STACK_FRAME_TEMPLATE = 
+            // save LCL address into tmp variable frame
+            """
+            @LCL
+            D=M
+            @frame
+            M=D
+            """
+            //save return address into tmp variable returnAddr        
+            + """
+            @5
+            D=A
+            @frame
+            A=M-D
+            D=M
+            @returnAddr
+            M=D
+            """ + JUST_POP_INTO_D_TEMPLATE 
+
+            // save return value for caller
+            + """
+            @ARG
+            A=M
+            M=D
+            """
+            // save stack pointer for caller                  
+            + """
+            @ARG
+            D=M+1
+            @SP
+            M=D
+            """ + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(1, "THAT") // restore segments for caller from stack frame
+            + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(2, "THIS") 
+            + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(3, "ARG") 
+            + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(4, "LCL")
+            
+            // go to instruction after function call      
+            + """
+            @returnAddr
+            A=M
+            0;JMP
+            """;
+
     private AsmTemplate() {}
 }
