@@ -152,6 +152,40 @@ final class AsmTemplate {
             M=D
             """;
     
+    private static final String PUSH_SEGMENT_ADDRESS = """
+            @%s
+            D=M
+            """ + PUSH_FROM_D_TEMPLATE;
+    
+    static final String PUSH_STACK_FRAME_TEMPLATE = """
+            @%s
+            D=A
+            """ + PUSH_FROM_D_TEMPLATE
+            + PUSH_SEGMENT_ADDRESS.formatted("LCL")
+            + PUSH_SEGMENT_ADDRESS.formatted("ARG")
+            + PUSH_SEGMENT_ADDRESS.formatted("THIS")
+            + PUSH_SEGMENT_ADDRESS.formatted("THAT")
+            + """
+            @SP
+            D=M
+            
+            @5
+            D=D-A
+            
+            @%d
+            D=D-A
+            
+            @SP
+            D=M
+            
+            @LCL
+            M=D
+            
+            @%s
+            0;JMP
+            (%s)
+            """;
+    
     static final String POP_STACK_FRAME_TEMPLATE = 
             // save LCL address into tmp variable frame
             """

@@ -32,6 +32,13 @@ public final class VMTranslatorTest {
         final Iterator<Path> vmFiles = getVmFiles(translatorPath);
         testVmFiles(translatorPath, vmFiles);
     }
+    
+    @Test
+    public void testFibonacciElement() throws IOException {
+        final Path translatorPath = Resources.RESOURCES_DIR.resolve("function").resolve("FibonacciElement");
+        final Iterator<Path> vmFiles = getVmFiles(translatorPath);
+        testVmFiles(translatorPath, vmFiles);
+    }
 
     public static Iterator<Path> getVmFiles(Path path) throws IOException {
         return Files.list(path)

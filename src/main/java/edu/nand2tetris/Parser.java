@@ -82,6 +82,7 @@ public final class Parser implements Closeable {
     private void handleCall(String command) {
         final String[] split = command.split("\s+");
         this.arg1 = split[1];
+        this.arg2 = Integer.parseInt(split[2]);
     }
 
     private void handleArithmetic(String command) {

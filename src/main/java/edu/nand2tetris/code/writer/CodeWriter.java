@@ -24,7 +24,7 @@ public final class CodeWriter implements Closeable {
     private final StringBuilder code = new StringBuilder();
     private StringBuilder currentFunction = new StringBuilder();
     private String fileName;
-    
+
     private final Map<String, Integer> functionNameToCallCount = new HashMap<>();
 
     public CodeWriter(Path path) throws IOException {
@@ -101,10 +101,10 @@ public final class CodeWriter implements Closeable {
         final Integer count = functionNameToCallCount.getOrDefault(fnName, 0);
         final String returnLabelName = fnName + "$ret." + count;
         functionNameToCallCount.put(fnName, count + 1);
-        
-//        @returnLabel == IP + N(весь код, связанный с сохранением стекфрейма + 1
-        
-        // (label)
+
+        write(
+                AsmTemplate.PUSH_STACK_FRAME_TEMPLATE.formatted(returnLabelName, argCount, fnName, returnLabelName)
+        );
     }
 
     public void writeReturn() {

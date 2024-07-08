@@ -12,8 +12,6 @@ import edu.nand2tetris.code.writer.CodeWriter;
 
 public class VMTranslator {
     private static final String VM_SUFFIX = ".vm";
-    
-    private static final Map<String, Integer> FUNCTION_NAME_TO_ARGS = new HashMap<>();
 
     /**
      * arg[0] - source VM file or dir with VM files (required)
@@ -95,13 +93,6 @@ public class VMTranslator {
 
                 throw new IllegalStateException("Invalid files: " + invalidFilesStr);
             }
-            
-            for (Path srcFile : files) {
-                codeWriter.setFileName(getVmFileName(srcFile));
-                try (Parser parser = new Parser(srcFile)) {
-                    registerFunctions(parser);
-                }
-            }
 
             for (Path srcFile : files) {
                 codeWriter.setFileName(getVmFileName(srcFile));
@@ -113,20 +104,6 @@ public class VMTranslator {
             throw new RuntimeException("Translation is failed ", e);
         }
     }
-
-    private static void registerFunctions(Parser parser) {
-        while (parser.hasMoreLines()) {
-            parser.advance();
-
-            final CommandType commandType = parser.commandType();
-            if (commandType != CommandType.C_FUNCTION) {
-                continue;
-            }
-            
-            FUNCTION_NAME_TO_ARGS.put(parser.arg1(), parser.arg2());
-        }
-    }
-    
     private static void handleParser(Parser parser, CodeWriter codeWriter) throws IOException {
         while (parser.hasMoreLines()) {
             parser.advance();
@@ -140,7 +117,7 @@ public class VMTranslator {
                 case C_IF -> codeWriter.writeIf(parser.arg1());
                 case C_FUNCTION -> codeWriter.writeFunction(parser.arg1(), parser.arg2());
                 case C_RETURN -> codeWriter.writeReturn();
-                case C_CALL -> codeWriter.writeCall(parser.arg1(), FUNCTION_NAME_TO_ARGS.get(parser.arg1()));
+                case C_CALL -> codeWriter.writeCall(parser.arg1(), parser.arg2());
                 default -> throw new IllegalStateException("Unsupported command type: " + commandType);
             }
         }
