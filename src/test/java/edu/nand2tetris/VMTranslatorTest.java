@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public final class VMTranslatorTest {
-    private final static Pattern VM_FILE_NAME = Pattern.compile("^[A-Za-z]+.vm$");
+    private final static Pattern VM_FILE_NAME = Pattern.compile("^\\S+.vm$");
 
     @Test
     public void basicTest() throws IOException {
@@ -38,6 +38,21 @@ public final class VMTranslatorTest {
         final Path translatorPath = Resources.RESOURCES_DIR.resolve("function").resolve("FibonacciElement");
         final Iterator<Path> vmFiles = getVmFiles(translatorPath);
         testVmFiles(translatorPath, vmFiles);
+    }
+    
+    @Test
+    public void testStatic() throws IOException {
+        final Path translatorPath = Resources.RESOURCES_DIR.resolve("function").resolve("StaticsTest");
+        final Path testPath = translatorPath.resolve("test");
+        Files.createDirectory(testPath);
+
+        final Path outFile = testPath.resolve("StaticsTest.asm");
+        try {
+            VMTranslator.main(new String[]{translatorPath.toAbsolutePath().toString(), outFile.toAbsolutePath().toString()});
+        } finally {
+//            Files.delete(outFile);
+//            Files.delete(testPath);
+        }
     }
 
     public static Iterator<Path> getVmFiles(Path path) throws IOException {

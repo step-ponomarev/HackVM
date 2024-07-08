@@ -116,7 +116,7 @@ public final class CodeWriter implements Closeable {
         currentFunction = new StringBuilder();
     }
 
-    static String handlePushPop(CommandType commandType, Segment segment, int index) {
+    private String handlePushPop(CommandType commandType, Segment segment, int index) {
         checkPushOrPopCommand(commandType);
         final StringBuilder asm = new StringBuilder();
         if (segment == Segment.CONSTANT) {
@@ -127,7 +127,7 @@ public final class CodeWriter implements Closeable {
             asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted(index == 0 ? Constants.THIS_REGISTER : Constants.THAT_REGISTER));
             index = 0;
         } else if (segment == Segment.STATIC) {
-            asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted("FileName." + index));
+            asm.append(AsmTemplate.LOAD_D_TEMPLATE.formatted(this.fileName + "." + index));
         } else {
             asm.append(
                     AsmTemplate.READ_SEGMENT_BASE_ADDRESS_TEMPLATE.formatted(

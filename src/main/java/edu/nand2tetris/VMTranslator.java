@@ -81,17 +81,8 @@ public class VMTranslator {
         }
 
         try (CodeWriter codeWriter = new CodeWriter(outFile)) {
-            final List<Path> files = Files.walk(srcDir).toList();
-            final List<Path> invalidFiles = files.stream().filter(e -> !e.getFileName().endsWith(VM_SUFFIX)).toList();
-            if (!invalidFiles.isEmpty()) {
-                final StringBuilder invalidFilesStr = new StringBuilder();
-                for (Path invalidFile : invalidFiles) {
-                    invalidFilesStr.append(invalidFile).append(", ");
-                }
-
-                throw new IllegalStateException("Invalid files: " + invalidFilesStr);
-            }
-
+            final List<Path> files = Files.walk(srcDir).toList().stream().filter(e -> e.getFileName().toString().endsWith(VM_SUFFIX)).toList();
+//            codeWriter.initCode();
             for (Path srcFile : files) {
                 codeWriter.setFileName(getVmFileName(srcFile));
                 try (Parser parser = new Parser(srcFile)) {
