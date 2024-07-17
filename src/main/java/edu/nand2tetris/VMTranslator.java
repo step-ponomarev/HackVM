@@ -81,8 +81,9 @@ public class VMTranslator {
         }
 
         try (CodeWriter codeWriter = new CodeWriter(outFile)) {
+            codeWriter.initCode();
+
             final List<Path> files = Files.walk(srcDir).toList().stream().filter(e -> e.getFileName().toString().endsWith(VM_SUFFIX)).toList();
-//            codeWriter.initCode();
             for (Path srcFile : files) {
                 codeWriter.setFileName(getVmFileName(srcFile));
                 try (Parser parser = new Parser(srcFile)) {

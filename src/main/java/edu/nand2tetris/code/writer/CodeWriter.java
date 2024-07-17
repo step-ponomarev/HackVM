@@ -22,8 +22,9 @@ public final class CodeWriter implements Closeable {
     private final BufferedWriter writer;
 
     private final StringBuilder code = new StringBuilder();
-    private StringBuilder currentFunction = new StringBuilder();
     private String fileName;
+
+    private String functionName;
 
     private final Map<String, Integer> functionNameToCallCount = new HashMap<>();
 
@@ -74,46 +75,69 @@ public final class CodeWriter implements Closeable {
     }
 
     public void writeLabel(String label) {
-        write(AsmTemplate.LABEL_TEMPLATE.formatted(label));
+        write(
+                this.functionName == null
+                        ? AsmTemplate.LABEL_TEMPLATE.formatted(label)
+                        : AsmTemplate.LABEL_TEMPLATE.formatted(
+                                getLabelName(label)
+                )
+        );
     }
 
     public void writeGoto(String label) {
-        write(AsmTemplate.GOTO_TEMPLATE.formatted(label));
+        write(
+                AsmTemplate.GOTO_TEMPLATE.formatted(
+                        getLabelName(label)
+                )
+        );
     }
 
     public void writeIf(String label) {
         write(
-                AsmTemplate.IF_TEMPLATE.formatted(label)
+                AsmTemplate.IF_TEMPLATE.formatted(
+                        getLabelName(label)
+                )
         );
     }
 
+    private String getLabelName(String label) {
+        if (this.functionName == null) {
+            return label;
+        }
+
+        return functionName + "$" + label;
+    }
+
     public void writeFunction(String functionName, int nArgs) {
+        this.functionName = functionName;
+
         final StringBuilder function = new StringBuilder();
         function.append(AsmTemplate.LABEL_TEMPLATE.formatted(functionName));
         for (int i = 0; i < nArgs; i++) {
             function.append(handlePushPop(CommandType.C_PUSH, Segment.LOCAL, i));
         }
 
-        currentFunction.append(function);
+        write(
+                function.toString()
+        );
     }
 
     public void writeCall(String fnName, int argCount) {
         final Integer count = functionNameToCallCount.getOrDefault(fnName, 0);
-        final String returnLabelName = fnName + "$ret." + count;
         functionNameToCallCount.put(fnName, count + 1);
 
         write(
-                AsmTemplate.PUSH_STACK_FRAME_TEMPLATE.formatted(returnLabelName, argCount, fnName, returnLabelName)
+                callInstructions(fnName, argCount, count)
         );
     }
 
-    public void writeReturn() {
-        currentFunction.append(
-                AsmTemplate.POP_STACK_FRAME_TEMPLATE
-        );
+    private static String callInstructions(String fnName, int argCount, int fnCallCount) {
+        final String returnLabelName = fnName + "$ret." + fnCallCount;
+        return AsmTemplate.PUSH_STACK_FRAME_TEMPLATE.formatted(returnLabelName, argCount, fnName, returnLabelName);
+    }
 
-        code.insert(0, currentFunction);
-        currentFunction = new StringBuilder();
+    public void writeReturn() {
+        code.append(AsmTemplate.POP_STACK_FRAME_TEMPLATE);
     }
 
     private String handlePushPop(CommandType commandType, Segment segment, int index) {
@@ -141,8 +165,10 @@ public final class CodeWriter implements Closeable {
         }
 
         // IF not constant - address in D, read value in D from segment
-        if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT) {
+        if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT && segment != Segment.STATIC) {
             asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX_TEMPLATE.formatted(index));
+        } else if (segment == Segment.STATIC) {
+            asm.append("D=M\n");
         }
 
         asm.append(
@@ -175,11 +201,7 @@ public final class CodeWriter implements Closeable {
     }
 
     private void write(String code) {
-        if (!currentFunction.isEmpty()) {
-            currentFunction.append(code);
-        } else {
-            this.code.append(code);
-        }
+        this.code.append(code);
     }
 
     private static void checkPushOrPopCommand(CommandType commandType) {
@@ -190,5 +212,15 @@ public final class CodeWriter implements Closeable {
 
     private static boolean isPushOrPopCommand(CommandType commandType) {
         return commandType == CommandType.C_POP || commandType == CommandType.C_PUSH;
+    }
+
+    public void initCode() {
+        code.append("""
+                @256
+                D=A
+                @SP
+                M=D
+                """);
+        code.append(callInstructions("Sys.init", 0, 0));
     }
 }
