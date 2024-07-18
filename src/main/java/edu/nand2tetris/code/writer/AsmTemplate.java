@@ -139,7 +139,7 @@ final class AsmTemplate {
     
     static final String IF_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
             @%s
-            D;JLT
+            D;JNE
             """;
 
     private static final String INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE = """

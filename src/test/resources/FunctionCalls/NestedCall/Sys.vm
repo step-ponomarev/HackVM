@@ -5,7 +5,8 @@
 // Does not return (enters infinite loop).
 // The VM implementation starts running the Sys.init function, by default.
 function Sys.init 0
-	push constant 4000	// tests that THIS and THAT are handled correctly
+	// tests that THIS and THAT are handled correctly
+	push constant 4000
 	pop pointer 0
 	push constant 5000
 	pop pointer 1

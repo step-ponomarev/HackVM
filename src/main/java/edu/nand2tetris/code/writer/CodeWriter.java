@@ -165,10 +165,8 @@ public final class CodeWriter implements Closeable {
         }
 
         // IF not constant - address in D, read value in D from segment
-        if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT && segment != Segment.STATIC) {
+        if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT) {
             asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX_TEMPLATE.formatted(index));
-        } else if (segment == Segment.STATIC) {
-            asm.append("D=M\n");
         }
 
         asm.append(

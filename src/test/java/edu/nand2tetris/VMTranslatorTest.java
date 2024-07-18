@@ -70,12 +70,62 @@ public final class VMTranslatorTest {
     }
     
     @Test
+    public void testProgramFlowBasicLoop() throws IOException, ASMTranslationException {
+        final Path basicTestDir = Resources.RESOURCES_DIR.resolve("ProgramFlow").resolve("BasicLoop");
+
+        VMTranslator.main(new String[]{basicTestDir.resolve("BasicLoop.vm").toAbsolutePath().toString(), basicTestDir.resolve("BasicLoop.asm").toString()});
+        ASMTester.executeTestScript(
+                basicTestDir.resolve("BasicLoop.tst")
+        );
+    }
+    
+    @Test
+    public void testProgramFlowFibonacciSeries() throws IOException, ASMTranslationException {
+        final Path basicTestDir = Resources.RESOURCES_DIR.resolve("ProgramFlow").resolve("FibonacciSeries");
+
+        VMTranslator.main(new String[]{basicTestDir.resolve("FibonacciSeries.vm").toAbsolutePath().toString(), basicTestDir.resolve("FibonacciSeries.asm").toString()});
+        ASMTester.executeTestScript(
+                basicTestDir.resolve("FibonacciSeries.tst")
+        );
+    }
+    
+    @Test
     public void testFunctionCallsFibonacciElement() throws IOException, ASMTranslationException {
         final Path basicTestDir = Resources.RESOURCES_DIR.resolve("FunctionCalls").resolve("FibonacciElement");
 
         VMTranslator.main(new String[]{basicTestDir.toAbsolutePath().toString(), basicTestDir.resolve("FibonacciElement.asm").toString()});
         ASMTester.executeTestScript(
                 basicTestDir.resolve("FibonacciElement.tst")
+        );
+    }
+    
+    @Test
+    public void testFunctionCallsSimpleFunction() throws IOException, ASMTranslationException {
+        final Path basicTestDir = Resources.RESOURCES_DIR.resolve("FunctionCalls").resolve("SimpleFunction");
+
+        VMTranslator.main(new String[]{basicTestDir.resolve("SimpleFunction.vm").toAbsolutePath().toString(), basicTestDir.resolve("SimpleFunction.asm").toString()});
+        ASMTester.executeTestScript(
+                basicTestDir.resolve("SimpleFunction.tst")
+        );
+    }
+    
+    @Test
+    public void testFunctionCallsStaticsTest() throws IOException, ASMTranslationException {
+        final Path basicTestDir = Resources.RESOURCES_DIR.resolve("FunctionCalls").resolve("StaticsTest");
+
+        VMTranslator.main(new String[]{basicTestDir.toAbsolutePath().toString(), basicTestDir.resolve("StaticsTest.asm").toString()});
+        ASMTester.executeTestScript(
+                basicTestDir.resolve("StaticsTest.tst")
+        );
+    }
+    
+    @Test
+    public void testFunctionCallsNestedCall() throws IOException, ASMTranslationException {
+        final Path basicTestDir = Resources.RESOURCES_DIR.resolve("FunctionCalls").resolve("NestedCall");
+
+        VMTranslator.main(new String[]{basicTestDir.resolve("Sys.vm").toAbsolutePath().toString(), basicTestDir.resolve("NestedCall.asm").toString()});
+        ASMTester.executeTestScript(
+                basicTestDir.resolve("NestedCall.tst")
         );
     }
 
