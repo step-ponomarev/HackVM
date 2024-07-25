@@ -72,12 +72,27 @@ public final class Parser implements Closeable {
             case C_ARITHMETIC -> handleArithmetic(command);
             case C_PUSH, C_POP -> handlePushPop(command);
             case C_LABEL, C_IF, C_GOTO -> handleLabel(command);
+            case C_FUNCTION -> handleFunction(command);
+            case C_CALL -> handleCall(command);
+            case C_RETURN -> handleReturn();
             default -> throw new UnsupportedOperationException("Unsupported operation " + commandType);
         }
     }
 
+    private void handleCall(String command) {
+        final String[] split = command.split("\s+");
+        this.arg1 = split[1];
+        this.arg2 = Integer.parseInt(split[2]);
+    }
+
     private void handleArithmetic(String command) {
         this.arg1 = command;
+    }
+
+    private void handleFunction(String command) {
+        final String[] split = command.split("\s+");
+        this.arg1 = split[1];
+        this.arg2 = Integer.parseInt(split[2]);
     }
 
     private void handleLabel(String command) {
@@ -93,6 +108,9 @@ public final class Parser implements Closeable {
         if (this.arg2 < 0 || this.arg2 > Constants.MAX_DECIMAL_VALUE) {
             throw new IllegalStateException("Value out of range [" + 0 + ", " + this.arg2 + "]");
         }
+    }
+
+    private void handleReturn() {
     }
 
     private String readNextInstruction() throws IOException {

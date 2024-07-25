@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import edu.nand2tetris.code.writer.CodeWriter;
 
@@ -11,29 +12,22 @@ public class VMTranslator {
     private static final String VM_SUFFIX = ".vm";
 
     public static void main(String[] args) throws IOException {
-        //TODO: флаги компиляции
-        if (args.length < 1) {
-            throw new IllegalArgumentException("Expected 1 arg, but got: " + args.length);
-        }
-
         final Path vmFileOrDir = Paths.get(args[0]);
         if (Files.notExists(vmFileOrDir)) {
             throw new IllegalStateException("File does not exist: " + vmFileOrDir);
         }
 
         final boolean dir = !vmFileOrDir.getFileName().toString().endsWith(VM_SUFFIX);
-        if (dir && !Files.isDirectory(vmFileOrDir)) {
-            throw new IllegalArgumentException(vmFileOrDir + " is not directory");
-        }
+        final Path outFile = prepareOutFile(
+                args.length > 1
+                        ? Paths.get(args[1])
+                        : vmFileOrDir.getParent().resolve(vmFileOrDir.getFileName().toString().replace("vm", "asm"))
+        );
 
         if (dir) {
-            handleDir(vmFileOrDir);
+            handleDir(vmFileOrDir, outFile);
         } else {
-            final Path outFile = args.length > 1
-                    ? Paths.get(args[1])
-                    : vmFileOrDir.getParent().resolve(vmFileOrDir.getFileName().toString().replace("vm", "asm"));
-
-            handleSingleFile(vmFileOrDir, prepareOutFile(outFile));
+            handleSingleFile(vmFileOrDir, outFile);
         }
     }
 
@@ -66,48 +60,33 @@ public class VMTranslator {
         }
 
         try (CodeWriter codeWriter = new CodeWriter(outFile)) {
+            codeWriter.setFileName(getVmFileName(srcFile));
+
             try (Parser parser = new Parser(srcFile)) {
                 handleParser(parser, codeWriter);
             }
         }
     }
 
-    private static void handleDir(Path srcDir) {
+    private static void handleDir(Path srcDir, Path outFile) {
         if (!Files.isDirectory(srcDir)) {
             throw new IllegalArgumentException("Path is not srcDir: " + srcDir);
         }
 
-        throw new UnsupportedOperationException("Not implemented yet");
+        try (CodeWriter codeWriter = new CodeWriter(outFile)) {
+            codeWriter.initCode();
 
-//        try (CodeWriter codeWriter = new CodeWriter(outFile)) {
-//            if (!srcDir) {
-//                try (Parser parser = new Parser(vmFileOrDir)) {
-//                    handleParser(parser, codeWriter);
-//                }
-//                return;
-//            }
-//
-//            final List<Path> files = Files.walk(vmFileOrDir).toList();
-//            final List<Path> invalidFiles = files.stream().filter(e -> !e.getFileName().endsWith(VM_SUFFIX)).toList();
-//            if (!invalidFiles.isEmpty()) {
-//                final StringBuilder invalidFilesStr = new StringBuilder();
-//                for (Path invalidFile : invalidFiles) {
-//                    invalidFilesStr.append(invalidFile).append(", ");
-//                }
-//
-//                throw new IllegalStateException("Invalid files: " + invalidFilesStr);
-//            }
-//
-//            for (Path file : files) {
-//                try (Parser parser = new Parser(file)) {
-//                    handleParser(parser, codeWriter);
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException("Translation is failed ", e);
-//        }
+            final List<Path> files = Files.walk(srcDir).toList().stream().filter(e -> e.getFileName().toString().endsWith(VM_SUFFIX)).toList();
+            for (Path srcFile : files) {
+                codeWriter.setFileName(getVmFileName(srcFile));
+                try (Parser parser = new Parser(srcFile)) {
+                    handleParser(parser, codeWriter);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Translation is failed ", e);
+        }
     }
-
     private static void handleParser(Parser parser, CodeWriter codeWriter) throws IOException {
         while (parser.hasMoreLines()) {
             parser.advance();
@@ -119,8 +98,16 @@ public class VMTranslator {
                 case C_LABEL -> codeWriter.writeLabel(parser.arg1());
                 case C_GOTO -> codeWriter.writeGoto(parser.arg1());
                 case C_IF -> codeWriter.writeIf(parser.arg1());
+                case C_FUNCTION -> codeWriter.writeFunction(parser.arg1(), parser.arg2());
+                case C_RETURN -> codeWriter.writeReturn();
+                case C_CALL -> codeWriter.writeCall(parser.arg1(), parser.arg2());
                 default -> throw new IllegalStateException("Unsupported command type: " + commandType);
             }
         }
+    }
+
+    private static String getVmFileName(Path srcFile) {
+        String fileName = srcFile.getFileName().toString();
+        return fileName.substring(0, fileName.length() - 3);
     }
 }

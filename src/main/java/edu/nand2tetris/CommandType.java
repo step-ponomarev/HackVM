@@ -9,9 +9,9 @@ public enum CommandType {
     C_LABEL(TokenPatterns.LABEL_COMMAND),
     C_GOTO(TokenPatterns.GOTO),
     C_IF(TokenPatterns.IF_COMMAND),
-    C_FUNCTION(null),
-    C_RETURN(null),
-    C_CALL(null);
+    C_FUNCTION(TokenPatterns.FUNCTION_COMMAND),
+    C_RETURN(TokenPatterns.RETURN_COMMAND),
+    C_CALL(TokenPatterns.CALL_COMMAND);
 
     private Pattern commandPattern;
 

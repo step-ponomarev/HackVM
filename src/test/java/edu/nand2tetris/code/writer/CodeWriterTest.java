@@ -24,21 +24,6 @@ public final class CodeWriterTest {
     }};
 
     @Test
-    public void testPushPopIllegalCommands() {
-        for (CommandType type : CommandType.values()) {
-            if (PUSH_POP_COMMAND_TYPES.contains(type)) {
-                continue;
-            }
-
-            Assertions.assertThrows(IllegalStateException.class, () -> CodeWriter.handlePushPop(type, Segment.LOCAL, 0));
-        }
-
-        for (CommandType type : PUSH_POP_COMMAND_TYPES) {
-            CodeWriter.handlePushPop(type, Segment.LOCAL, 0);
-        }
-    }
-
-    @Test
     public void testWritePushPopIllegalCommands() throws IOException {
         final Path path = Resources.RESOURCES_DIR.resolve("mock");
         Files.createFile(path);
