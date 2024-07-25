@@ -95,7 +95,7 @@ M=D
 M=M+1
 @Class1.1
 D=A
-@1
+@0
 D=D+A
 @ADDR_SAVE
 M=D
@@ -179,7 +179,7 @@ M=D
 M=M+1
 @Class1.1
 D=A
-@1
+@0
 A=D+A
 D=M
 @SP
@@ -584,7 +584,7 @@ M=D
 M=M+1
 @Class2.1
 D=A
-@1
+@0
 D=D+A
 @ADDR_SAVE
 M=D
@@ -668,7 +668,7 @@ M=D
 M=M+1
 @Class2.1
 D=A
-@1
+@0
 A=D+A
 D=M
 @SP

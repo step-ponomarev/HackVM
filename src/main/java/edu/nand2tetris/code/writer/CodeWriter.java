@@ -161,12 +161,12 @@ public final class CodeWriter implements Closeable {
         }
 
         if (commandType == CommandType.C_POP) {
-            asm.append(AsmTemplate.ADD_TO_D_TEMPLATE.formatted(index));
+            asm.append(AsmTemplate.ADD_TO_D_TEMPLATE.formatted(segment == Segment.STATIC ? 0 : index));
         }
 
         // IF not constant - address in D, read value in D from segment
         if (commandType == CommandType.C_PUSH && segment != Segment.CONSTANT) {
-            asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX_TEMPLATE.formatted(index));
+            asm.append(AsmTemplate.LOAD_FROM_D_ADDRESS_AND_INDEX_TEMPLATE.formatted(segment == Segment.STATIC ? 0 : index));
         }
 
         asm.append(

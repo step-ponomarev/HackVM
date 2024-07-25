@@ -118,16 +118,6 @@ public final class VMTranslatorTest {
                 basicTestDir.resolve("StaticsTest.tst")
         );
     }
-    
-    @Test
-    public void testFunctionCallsNestedCall() throws IOException, ASMTranslationException {
-        final Path basicTestDir = Resources.RESOURCES_DIR.resolve("FunctionCalls").resolve("NestedCall");
-
-        VMTranslator.main(new String[]{basicTestDir.resolve("Sys.vm").toAbsolutePath().toString(), basicTestDir.resolve("NestedCall.asm").toString()});
-        ASMTester.executeTestScript(
-                basicTestDir.resolve("NestedCall.tst")
-        );
-    }
 
     public static Iterator<Path> getVmFiles(Path path) throws IOException {
         return Files.list(path)

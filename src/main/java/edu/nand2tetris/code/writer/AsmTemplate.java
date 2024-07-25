@@ -65,7 +65,7 @@ final class AsmTemplate {
             """;
 
     static final String ADD_TO_D_TEMPLATE = """
-            @%d
+            @%s
             D=D+A
             """;
 

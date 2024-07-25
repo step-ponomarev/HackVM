@@ -21,7 +21,7 @@ M=D
 M=M+1
 @StaticTest.8
 D=A
-@8
+@0
 D=D+A
 @ADDR_SAVE
 M=D
@@ -34,7 +34,7 @@ A=M
 M=D
 @StaticTest.3
 D=A
-@3
+@0
 D=D+A
 @ADDR_SAVE
 M=D
@@ -47,7 +47,7 @@ A=M
 M=D
 @StaticTest.1
 D=A
-@1
+@0
 D=D+A
 @ADDR_SAVE
 M=D
@@ -60,7 +60,7 @@ A=M
 M=D
 @StaticTest.3
 D=A
-@3
+@0
 A=D+A
 D=M
 @SP
@@ -70,7 +70,7 @@ M=D
 M=M+1
 @StaticTest.1
 D=A
-@1
+@0
 A=D+A
 D=M
 @SP
@@ -102,7 +102,7 @@ M=D
 M=M+1
 @StaticTest.8
 D=A
-@8
+@0
 A=D+A
 D=M
 @SP
