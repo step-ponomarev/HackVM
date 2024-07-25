@@ -12,8 +12,8 @@ final class AsmTemplate {
             @SP
             M=M+1
             """;
-    
-      static final String JUST_POP_INTO_D_TEMPLATE = """
+
+    static final String JUST_POP_INTO_D_TEMPLATE = """
             @SP
             M=M-1
             A=M
@@ -22,13 +22,13 @@ final class AsmTemplate {
     static final String POP_INTO_D_AND_SAVE_ADDRESS_TEMPLATE = """
             @ADDR_SAVE
             M=D
-            """ + 
-            JUST_POP_INTO_D_TEMPLATE + 
+            """ +
+            JUST_POP_INTO_D_TEMPLATE +
             """
-            @ADDR_SAVE
-            A=M
-            M=D
-            """;
+                    @ADDR_SAVE
+                    A=M
+                    M=D
+                    """;
 
     static final String POP_INTO_ARG1_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
             @ARG1
@@ -131,12 +131,12 @@ final class AsmTemplate {
     static final String LABEL_TEMPLATE = """
             (%s)
             """;
-    
+
     static final String GOTO_TEMPLATE = """
             @%s
             0;JMP
             """;
-    
+
     static final String IF_TEMPLATE = JUST_POP_INTO_D_TEMPLATE + """
             @%s
             D;JNE
@@ -151,12 +151,12 @@ final class AsmTemplate {
             @%s
             M=D
             """;
-    
+
     private static final String PUSH_SEGMENT_ADDRESS = """
             @%s
             D=M
             """ + PUSH_FROM_D_TEMPLATE;
-    
+
     static final String PUSH_STACK_FRAME_TEMPLATE = """
             @%s
             D=A
@@ -169,69 +169,69 @@ final class AsmTemplate {
 
             @SP
             D=M
-            
+                        
             @5
             D=D-A
-            
+                        
             @%d
             D=D-A
-            
+                        
             @ARG
             M=D
-            
+                        
             @SP
             D=M
-            
+                        
             @LCL
             M=D
-            
+                        
             @%s
             0;JMP
             (%s)
             """;
-    
-    static final String POP_STACK_FRAME_TEMPLATE = 
+
+    static final String POP_STACK_FRAME_TEMPLATE =
             // save LCL address into tmp variable frame
             """
-            @LCL
-            D=M
-            @frame
-            M=D
-            """
-            //save return address into tmp variable returnAddr        
-            + """
-            @5
-            D=A
-            @frame
-            A=M-D
-            D=M
-            @returnAddr
-            M=D
-            """ + JUST_POP_INTO_D_TEMPLATE 
+                    @LCL
+                    D=M
+                    @frame
+                    M=D
+                    """
+                    //save return address into tmp variable returnAddr        
+                    + """
+                    @5
+                    D=A
+                    @frame
+                    A=M-D
+                    D=M
+                    @returnAddr
+                    M=D
+                    """ + JUST_POP_INTO_D_TEMPLATE
 
-            // save return value for caller
-            + """
-            @ARG
-            A=M
-            M=D
-            """
-            // save stack pointer for caller                  
-            + """
-            @ARG
-            D=M+1
-            @SP
-            M=D
-            """ + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(1, "THAT") // restore segments for caller from stack frame
-            + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(2, "THIS") 
-            + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(3, "ARG") 
-            + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(4, "LCL")
-            
-            // go to instruction after function call      
-            + """
-            @returnAddr
-            A=M
-            0;JMP
-            """;
+                    // save return value for caller
+                    + """
+                    @ARG
+                    A=M
+                    M=D
+                    """
+                    // save stack pointer for caller                  
+                    + """
+                    @ARG
+                    D=M+1
+                    @SP
+                    M=D
+                    """ + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(1, "THAT") // restore segments for caller from stack frame
+                    + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(2, "THIS")
+                    + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(3, "ARG")
+                    + INIT_SEGMENT_ADDRESS_FROM_FRAME_INDEX_TEMPLATE.formatted(4, "LCL")
+
+                    // go to instruction after function call      
+                    + """
+                    @returnAddr
+                    A=M
+                    0;JMP
+                    """;
 
     private AsmTemplate() {}
 }
