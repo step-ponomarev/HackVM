@@ -11,13 +11,6 @@ import edu.nand2tetris.code.writer.CodeWriter;
 public class VMTranslator {
     private static final String VM_SUFFIX = ".vm";
 
-    /**
-     * arg[0] - source VM file or dir with VM files (required)
-     * arg[1] - out VM file name (not required)
-     * 
-     * @param args
-     * @throws IOException
-     */
     public static void main(String[] args) throws IOException {
         final Path vmFileOrDir = Paths.get(args[0]);
         if (Files.notExists(vmFileOrDir)) {
