@@ -45,7 +45,7 @@ final class AsmTemplate {
             D=M
             @ARG2
             A=M
-            D=A+D
+            D=D+A
             """ + PUSH_FROM_D_TEMPLATE;
 
     static final String SUB_TEMPLATE = POP_INTO_ARG1_TEMPLATE + POP_INTO_ARG2_TEMPLATE + """
